@@ -15,15 +15,8 @@ RUN npm install --legacy-peer-deps
 # 전체 소스 복사
 COPY . .
 
-# Next.js 프로젝트 빌드 (빌드 시점에 환경변수 사용)
-ARG NOTION_TOKEN
-ARG NOTION_DATABASE_ID
-ENV NOTION_TOKEN=$NOTION_TOKEN
-ENV NOTION_DATABASE_ID=$NOTION_DATABASE_ID
-
 # Next.js 빌드
 RUN npm run build
-
 
 ##########################################################
 # 2단계: 실제 서비스용 스테이지 (Production)
@@ -44,8 +37,16 @@ COPY --from=builder /app/package*.json ./
 # 프로덕션 의존성만 설치
 RUN npm install --only=production --legacy-peer-deps
 
+# 환경변수 설정을 위한 스크립트 추가
+RUN echo "#!/bin/sh" > /docker-entrypoint.sh && \
+    echo "echo \"NOTION_TOKEN=\${NOTION_TOKEN}\" > /app/runtime.env" >> /docker-entrypoint.sh && \
+    echo "echo \"NOTION_DATABASE_ID=\${NOTION_DATABASE_ID}\" >> /app/runtime.env" >> /docker-entrypoint.sh && \
+    echo "exec \"\$@\"" >> /docker-entrypoint.sh && \
+    chmod +x /docker-entrypoint.sh
+
 # 컨테이너 3000 포트 개방
 EXPOSE 3000
 
-# Next.js 서버 실행
+# 환경변수 설정 후 서버 시작
+ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["npm", "run", "start"]
