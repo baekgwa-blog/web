@@ -1,7 +1,26 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
+import createMDX from '@next/mdx';
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    remotePatterns: [
+      {
+        hostname: 'picsum.photos',
+      },
+      {
+        hostname: 'images.unsplash.com',
+      },
+      {
+        hostname: 'prod-files-secure.s3.us-west-2.amazonaws.com',
+      },
+    ],
+  },
+  pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'mdx', 'md'],
 };
 
-export default nextConfig;
+const withMDX = createMDX({
+  options: {},
+});
+
+// MDX 설정을 Next.js 설정과 병합
+export default withMDX(nextConfig);

@@ -1,0 +1,15 @@
+{
+  "typescript.tsdk": "node_modules\\typescript\\lib",
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit"
+  },
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.tabSize": 2,
+  "css.lint.unknownAtRules": "ignore",
+  "editor.quickSuggestions": {
+    "comments": "on",
+    "strings": "on"
+  },
+  "cursor.cpp.enablePartialAccepts": true
+}
