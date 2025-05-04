@@ -6,8 +6,16 @@ import type {
 } from '@notionhq/client/build/src/api-endpoints';
 import { NotionToMarkdown } from 'notion-to-md';
 
+// 환경변수 유효성 검사
+const NOTION_TOKEN = process.env.NOTION_TOKEN;
+const NOTION_DATABASE_ID = process.env.NOTION_DATABASE_ID;
+
+if (!NOTION_TOKEN || !NOTION_DATABASE_ID) {
+  throw new Error('Required environment variables are not set: NOTION_TOKEN or NOTION_DATABASE_ID');
+}
+
 export const notion = new Client({
-  auth: process.env.NOTION_TOKEN,
+  auth: NOTION_TOKEN,
 });
 const n2m = new NotionToMarkdown({ notionClient: notion });
 
@@ -59,7 +67,7 @@ export const getPostBySlug = async (
   post: Post;
 }> => {
   const response = await notion.databases.query({
-    database_id: process.env.NOTION_DATABASE_ID!,
+    database_id: NOTION_DATABASE_ID,
     filter: {
       and: [
         {
@@ -124,7 +132,7 @@ export const getTags = async (): Promise<TagFilterItem[]> => {
 
 export const getPublishedPosts = async (tag?: string): Promise<Post[]> => {
   const response = await notion.databases.query({
-    database_id: process.env.NOTION_DATABASE_ID!,
+    database_id: NOTION_DATABASE_ID,
     filter: {
       property: 'Status',
       select: {

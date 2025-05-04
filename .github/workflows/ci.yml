@@ -22,3 +22,7 @@ jobs:
 
       - name: Build project
         run: npm run build
+        env:
+          # CI 빌드 체크용 더미 값 설정
+          NOTION_TOKEN: dummy_token_for_ci
+          NOTION_DATABASE_ID: dummy_id_for_ci

@@ -28,9 +28,6 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/baekgwa-web:latest
-          build-args: |
-            NOTION_TOKEN=${{ secrets.NOTION_TOKEN }}
-            NOTION_DATABASE_ID=${{ secrets.NOTION_DATABASE_ID }}
 
       - name: SSH into EC2 and Deploy
         uses: appleboy/ssh-action@v0.1.6
@@ -47,6 +44,8 @@ jobs:
               --restart always \
               --network baekgwa-network \
               -p 3000:3000 \
+              -e NOTION_TOKEN="${{ secrets.NOTION_TOKEN }}" \
+              -e NOTION_DATABASE_ID="${{ secrets.NOTION_DATABASE_ID }}" \
               ${{ secrets.DOCKERHUB_USERNAME }}/baekgwa-web:latest
 
             docker image prune -af
