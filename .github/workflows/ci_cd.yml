@@ -29,9 +29,8 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/baekgwa-web:latest
           build-args: |
-            # 빌드 시점에만 사용할 더미 값
-            NOTION_TOKEN=dummy_token_for_build
-            NOTION_DATABASE_ID=dummy_id_for_build
+            NOTION_TOKEN=${{ secrets.NOTION_TOKEN }}
+            NOTION_DATABASE_ID=${{ secrets.NOTION_DATABASE_ID }}
 
       - name: SSH into EC2 and Deploy
         uses: appleboy/ssh-action@v0.1.6
@@ -44,13 +43,10 @@ jobs:
             docker stop baekgwa-web || true
             docker rm baekgwa-web || true
 
-            # 실제 운영 환경에서는 진짜 환경변수 사용
             docker run -d --name baekgwa-web \
               --restart always \
               --network baekgwa-network \
               -p 3000:3000 \
-              -e NOTION_TOKEN="${{ secrets.NOTION_TOKEN }}" \
-              -e NOTION_DATABASE_ID="${{ secrets.NOTION_DATABASE_ID }}" \
               ${{ secrets.DOCKERHUB_USERNAME }}/baekgwa-web:latest
 
             docker image prune -af
