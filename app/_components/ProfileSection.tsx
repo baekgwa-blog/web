@@ -1,24 +1,16 @@
 import { Card, CardContent } from '@/components/ui/card';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { Youtube, Github, BookOpen, Instagram } from 'lucide-react';
+import { Github, Notebook } from 'lucide-react';
 
 const socialLinks = [
   {
-    icon: Youtube,
-    href: 'https://www.youtube.com/gymcoding',
-  },
-  {
     icon: Github,
-    href: 'https://github.com/gymcoding',
+    href: 'https://github.com/KangBaekGwa',
   },
   {
-    icon: BookOpen,
-    href: 'https://www.inflearn.com/users/432199/@gymcoding',
-  },
-  {
-    icon: Instagram,
-    href: 'https://www.instagram.com/gymcoding',
+    icon: Notebook,
+    href: 'https://velog.io/@baekgwa/posts',
   },
 ];
 
@@ -31,19 +23,19 @@ export default function ProfileSection() {
             <div className="bg-muted rounded-full p-2">
               <div className="h-36 w-36 overflow-hidden rounded-full">
                 <Image
-                  src="/images/profile-light.png"
-                  alt="짐코딩"
+                  src="/images/profile-centered-resized.png"
+                  alt="강성욱"
                   width={144}
                   height={144}
-                  className="object-cover"
+                  className="scale-110 object-cover object-top"
                 />
               </div>
             </div>
           </div>
 
           <div className="text-center">
-            <h3 className="text-lg font-bold">짐코딩</h3>
-            <p className="text-primary text-sm">Full Stack Developer</p>
+            <h3 className="text-lg font-bold">강성욱</h3>
+            <p className="text-primary text-sm">Server Developer</p>
           </div>
 
           <div className="flex justify-center gap-2">
@@ -56,7 +48,7 @@ export default function ProfileSection() {
             ))}
           </div>
 
-          <p className="bg-primary/10 rounded p-2 text-center text-sm">코딩 교육 크리에이터 ✨</p>
+          <p className="bg-primary/10 rounded p-2 text-center text-sm">성장형 개발자 🚀</p>
         </div>
       </CardContent>
     </Card>
