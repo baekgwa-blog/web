@@ -35,10 +35,11 @@ export default async function Home({ searchParams }: HomeProps) {
           </div>
 
           {/* 블로그 카드 그리드 */}
+          {/* 첫번째, 이미지만 priority 처리를 위해, 인덱스 전달 */}
           <div className="grid gap-4">
-            {posts.map((post) => (
+            {posts.map((post, index) => (
               <Link href={`/blog/${post.slug}`} key={post.id}>
-                <PostCard post={post} />
+                <PostCard post={post} isFirst={index === 0} />
               </Link>
             ))}
           </div>
