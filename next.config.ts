@@ -5,16 +5,24 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        hostname: 'picsum.photos',
-      },
-      {
-        hostname: 'images.unsplash.com',
-      },
-      {
-        hostname: 'prod-files-secure.s3.us-west-2.amazonaws.com',
-      },
-      {
+        protocol: 'https',
         hostname: 'www.notion.so',
+        pathname: '/images/**', // notion의 image path
+      },
+      {
+        protocol: 'https',
+        hostname: 'prod-files-secure.s3.us-west-2.amazonaws.com',
+        pathname: '**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        pathname: '**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'picsum.photos',
+        pathname: '**',
       },
     ],
   },
