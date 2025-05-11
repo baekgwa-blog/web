@@ -40,6 +40,7 @@ ENV NODE_ENV=production
 COPY --from=builder /app/.next .next
 COPY --from=builder /app/public public
 COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/next.config.js ./
 
 # 프로덕션 의존성만 설치
 RUN npm install --only=production --legacy-peer-deps

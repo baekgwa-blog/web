@@ -1,13 +1,13 @@
-import type { NextConfig } from 'next';
-import createMDX from '@next/mdx';
+/* eslint-disable @typescript-eslint/no-require-imports */
+const createMDX = require('@next/mdx');
 
-const nextConfig: NextConfig = {
+const nextConfig = {
   images: {
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'www.notion.so',
-        pathname: '/images/**', // notion의 image path
+        pathname: '/images/**',
       },
       {
         protocol: 'https',
@@ -33,5 +33,4 @@ const withMDX = createMDX({
   options: {},
 });
 
-// MDX 설정을 Next.js 설정과 병합
-export default withMDX(nextConfig);
+module.exports = withMDX(nextConfig);
