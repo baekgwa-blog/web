@@ -5,6 +5,7 @@ import type {
   PersonUserObjectResponse,
 } from '@notionhq/client/build/src/api-endpoints';
 import { NotionToMarkdown } from 'notion-to-md';
+import { notFound } from 'next/navigation';
 export const notion = new Client({
   auth: process.env.NOTION_TOKEN,
 });
@@ -88,6 +89,10 @@ export const getPostBySlug = async (
       ],
     },
   });
+
+  if (!response.results[0]) {
+    notFound();
+  }
 
   const mdBlocks = await n2m.pageToMarkdown(response.results[0].id);
   const { parent } = n2m.toMarkdownString(mdBlocks);

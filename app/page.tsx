@@ -18,14 +18,14 @@ export default async function Home({ searchParams }: HomeProps) {
   const postsPromise = getPublishedPosts({ tag: selectedTag, sort: selectedSort });
   return (
     <div className="container py-8">
-      <div className="grid grid-cols-[200px_1fr] gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-[200px_1fr]">
         {/* 좌측 사이드바 */}
-        <aside>
+        <aside className="order-1 md:order-none">
           <Suspense fallback={<TagSectionSkeleton />}>
             <TagSectionClient tags={tags} selectedTag={selectedTag} />
           </Suspense>
         </aside>
-        <div className="space-y-8">
+        <div className="order-2 space-y-8 md:order-none">
           {/* 섹션 제목 */}
           <HeaderSection selectedTag={selectedTag} />
           {/* 블로그 카드 그리드 */}

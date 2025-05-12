@@ -9,8 +9,13 @@ import { Loader2 } from 'lucide-react';
 import { useActionState } from 'react';
 import { createPostAction } from '@/app/actions/blog';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useQueryClient } from '@tanstack/react-query';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export function PostForm() {
+  const queryClient = useQueryClient();
+  const router = useRouter();
   const [state, formAction, isPending] = useActionState(createPostAction, {
     message: '',
     errors: {},
@@ -21,13 +26,20 @@ export function PostForm() {
     },
   });
 
+  useEffect(() => {
+    if (state.success) {
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
+      router.push('/');
+    }
+  }, [state, queryClient, router]);
+
   return (
     <form action={formAction}>
       <Card className="mx-auto max-w-2xl">
         <CardContent className="p-6">
           {/* 상태 메시지 표시 */}
           {state?.message && (
-            <Alert className={`mb-6 ${state.errors ? '!bg-red-50' : '!bg-green-50'}`}>
+            <Alert className={`mb-6 ${state.errors ? 'bg-red-50' : 'bg-green-50'}`}>
               <AlertDescription>{state.message}</AlertDescription>
             </Alert>
           )}
@@ -43,7 +55,7 @@ export function PostForm() {
               defaultValue={state?.formData?.title}
             />
             {state?.errors?.title && (
-              <p className="text-sm !text-red-500">{state.errors.title[0]}</p>
+              <p className="text-sm text-red-500">{state.errors.title[0]}</p>
             )}
           </div>
 
@@ -57,7 +69,7 @@ export function PostForm() {
               className="h-12"
               defaultValue={state?.formData?.tag}
             />
-            {state?.errors?.tag && <p className="text-sm !text-red-500">{state.errors.tag[0]}</p>}
+            {state?.errors?.tag && <p className="text-sm text-red-500">{state.errors.tag[0]}</p>}
           </div>
 
           {/* 본문 입력 */}
@@ -71,7 +83,7 @@ export function PostForm() {
               defaultValue={state?.formData?.content}
             />
             {state?.errors?.content && (
-              <p className="text-sm !text-red-500">{state.errors.content[0]}</p>
+              <p className="text-sm text-red-500">{state.errors.content[0]}</p>
             )}
           </div>
 
