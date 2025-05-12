@@ -1,5 +1,3 @@
-import ProfileSection from '@/app/_components/ProfileSection';
-import ContactSection from '@/app/_components/ContactSection';
 import { getTags, getPublishedPosts } from '@/lib/notion';
 import HeaderSection from '@/app/_components/HeaderSection';
 import PostListSuspense from '@/components/features/blog/PostListSuspense';
