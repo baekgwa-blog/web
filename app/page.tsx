@@ -20,7 +20,7 @@ export default async function Home({ searchParams }: HomeProps) {
   const postsPromise = getPublishedPosts({ tag: selectedTag, sort: selectedSort });
   return (
     <div className="container py-8">
-      <div className="grid grid-cols-[200px_1fr_220px] gap-6">
+      <div className="grid grid-cols-[200px_1fr] gap-6">
         {/* 좌측 사이드바 */}
         <aside>
           <Suspense fallback={<TagSectionSkeleton />}>
@@ -36,10 +36,10 @@ export default async function Home({ searchParams }: HomeProps) {
           </Suspense>
         </div>
         {/* 우측 사이드바 */}
-        <aside className="flex flex-col gap-6">
+        {/* <aside className="flex flex-col gap-6">
           <ProfileSection />
           <ContactSection />
-        </aside>
+        </aside> */}
       </div>
     </div>
   );
