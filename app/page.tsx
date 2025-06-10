@@ -1,10 +1,12 @@
-import { getTags, getPublishedPosts } from '@/lib/notion';
+import { getPublishedPosts } from '@/lib/notion';
+import { getTags } from '@/lib/api/tags';
 import HeaderSection from '@/app/_components/HeaderSection';
 import PostListSuspense from '@/components/features/blog/PostListSuspense';
 import { Suspense } from 'react';
 import TagSectionClient from '@/app/_components/TagSection.client';
 import PostListSkeleton from '@/components/features/blog/PostListSkeleton';
 import TagSectionSkeleton from '@/app/_components/TagSectionSkeleton';
+
 interface HomeProps {
   searchParams: Promise<{ tag?: string; sort?: string }>;
 }
@@ -16,6 +18,7 @@ export default async function Home({ searchParams }: HomeProps) {
 
   const tags = getTags();
   const postsPromise = getPublishedPosts({ tag: selectedTag, sort: selectedSort });
+
   return (
     <div className="container py-8">
       <div className="grid grid-cols-1 gap-6 md:grid-cols-[200px_1fr]">

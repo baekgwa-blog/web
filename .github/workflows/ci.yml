@@ -21,6 +21,7 @@ jobs:
         run: |
           echo "NOTION_TOKEN=dummy_notion_token" >> .env
           echo "NOTION_DATABASE_ID=dummy_database_id" >> .env
+          echo "API_SERVER_URL=http://localhost:8080" >> .env
 
       - name: Install dependencies
         run: npm ci
