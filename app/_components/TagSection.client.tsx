@@ -22,46 +22,42 @@ export default function TagSection({ tags, selectedTag }: TagSectionProps) {
     error = e as Error;
   }
 
-  const renderContent = () => {
-    if (error) {
-      return <TagSectionSkeleton />;
-    }
-
-    return (
-      <div className="flex flex-col gap-3">
-        <Link href="/">
-          <div
-            className={cn(
-              'hover:bg-muted-foreground/10 text-muted-foreground flex items-center justify-between rounded-md p-1.5 text-sm transition-colors',
-              selectedTag === '전체' && 'bg-muted-foreground/10 text-foreground font-medium'
-            )}
-          >
-            <span>전체</span>
-          </div>
-        </Link>
-        {allTags.map((tag) => (
-          <Link href={`?tag=${tag.name}`} key={tag.name}>
-            <div
-              className={cn(
-                'hover:bg-muted-foreground/10 text-muted-foreground flex items-center justify-between rounded-md p-1.5 text-sm transition-colors',
-                selectedTag === tag.name && 'bg-muted-foreground/10 text-foreground font-medium'
-              )}
-            >
-              <span>{tag.name}</span>
-              <span>{tag.count}</span>
-            </div>
-          </Link>
-        ))}
-      </div>
-    );
-  };
+  if (error) {
+    return <TagSectionSkeleton />;
+  }
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>태그 목록</CardTitle>
       </CardHeader>
-      <CardContent>{renderContent()}</CardContent>
+      <CardContent>
+        <div className="space-y-4">
+          <Link href="/" className="block">
+            <div
+              className={cn(
+                'hover:bg-muted-foreground/10 text-muted-foreground flex items-center justify-between rounded-md p-1.5 text-sm transition-colors',
+                selectedTag === '전체' && 'bg-muted-foreground/10 text-foreground font-medium'
+              )}
+            >
+              <span>전체</span>
+            </div>
+          </Link>
+          {allTags.map((tag) => (
+            <Link href={`?tag=${tag.name}`} key={tag.name} className="block">
+              <div
+                className={cn(
+                  'hover:bg-muted-foreground/10 text-muted-foreground flex items-center justify-between rounded-md p-1.5 text-sm transition-colors',
+                  selectedTag === tag.name && 'bg-muted-foreground/10 text-foreground font-medium'
+                )}
+              >
+                <span>{tag.name}</span>
+                <span>{tag.count}</span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </CardContent>
     </Card>
   );
 }

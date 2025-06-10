@@ -1,4 +1,4 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://blog.api.baekgwa.site';
+const API_URL = process.env.API_SERVER_URL || 'https://blog.api.baekgwa.site';
 
 export class ApiError extends Error {
   constructor(

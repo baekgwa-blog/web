@@ -31,6 +31,7 @@ jobs:
           build-args: |
             NOTION_TOKEN=${{ secrets.NOTION_TOKEN }}
             NOTION_DATABASE_ID=${{ secrets.NOTION_DATABASE_ID }}
+            API_SERVER_URL=${{ secrets.API_SERVER_URL }}
 
       - name: SSH into EC2 and Deploy
         uses: appleboy/ssh-action@v0.1.6
@@ -48,6 +49,7 @@ jobs:
               --network baekgwa-network \
               -e NOTION_TOKEN=${{ secrets.NOTION_TOKEN }} \
               -e NOTION_DATABASE_ID=${{ secrets.NOTION_DATABASE_ID }} \
+              -e API_SERVER_URL=${{ secrets.API_SERVER_URL }} \
               -p 3000:3000 \
               ${{ secrets.DOCKERHUB_USERNAME }}/baekgwa-web:latest
 
