@@ -1,9 +1,14 @@
+'use client';
+
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
 import { LoginForm } from '../features/user/LoginForm';
+import { useAuthStore } from '@/lib/store/auth';
 
 export default function Header() {
+  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+
   return (
     <header className="bg-background sticky top-0 z-50 border-b">
       <div className="container flex h-[var(--header-height)] items-center px-4">
@@ -26,10 +31,12 @@ export default function Header() {
           </nav>
           <div className="flex items-center justify-end gap-2">
             <ThemeToggle />
-            <LoginForm />
-            <Button asChild size="sm" className="gap-2">
-              <Link href="/blog/write">글쓰기</Link>
-            </Button>
+            {!isLoggedIn && <LoginForm />}
+            {isLoggedIn && (
+              <Button asChild size="sm" className="gap-2">
+                <Link href="/blog/write">글쓰기</Link>
+              </Button>
+            )}
           </div>
         </div>
       </div>

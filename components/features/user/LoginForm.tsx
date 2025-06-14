@@ -8,10 +8,12 @@ import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2 } from 'lucide-react';
 import { loginAction } from '@/app/actions/auth';
+import { useAuthStore } from '@/lib/store/auth';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 export function LoginForm() {
   const [isOpen, setIsOpen] = useState(false);
+  const setLoggedIn = useAuthStore((state) => state.setLoggedIn);
   const [state, formAction, isPending] = useActionState(loginAction, {
     message: '',
     errors: {},
@@ -23,9 +25,10 @@ export function LoginForm() {
 
   useEffect(() => {
     if (state.success) {
+      setLoggedIn(true);
       setIsOpen(false);
     }
-  }, [state.success]);
+  }, [state.success, setLoggedIn]);
 
   return (
     <>

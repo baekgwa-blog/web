@@ -1,6 +1,6 @@
 'use server';
 
-import { login } from '@/lib/api/auth';
+import { postLogin } from '@/lib/api/auth';
 import { z } from 'zod';
 
 const loginSchema = z.object({
@@ -32,7 +32,7 @@ export async function loginAction(prevState: LoginFormState, formData: FormData)
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: '유효성 검사에 실패했습니다.',
+      message: '로그인 정보를 다시 확인해주세요.',
       formData: rawFormData,
     };
   }
@@ -40,7 +40,7 @@ export async function loginAction(prevState: LoginFormState, formData: FormData)
   try {
     const { username, password } = validatedFields.data;
 
-    await login({ username, password });
+    await postLogin({ username, password });
 
     return {
       success: true,
