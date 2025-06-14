@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
+import { LoginForm } from '../features/user/LoginForm';
 
 export default function Header() {
   return (
@@ -25,6 +26,7 @@ export default function Header() {
           </nav>
           <div className="flex items-center justify-end gap-2">
             <ThemeToggle />
+            <LoginForm />
             <Button asChild size="sm" className="gap-2">
               <Link href="/blog/write">글쓰기</Link>
             </Button>

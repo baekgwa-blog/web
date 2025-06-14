@@ -1,5 +1,12 @@
 const API_URL = process.env.API_SERVER_URL || 'https://blog.api.baekgwa.site';
 
+export interface ApiResponse<T> {
+  isSuccess: boolean;
+  code: string;
+  message: string;
+  data: T | null;
+}
+
 export class ApiError extends Error {
   constructor(
     public status: number,
@@ -25,6 +32,7 @@ export async function fetchApi<T>(endpoint: string, options?: RequestInit): Prom
       'Content-Type': 'application/json',
       ...options?.headers,
     },
+    credentials: 'include',
   });
   return handleResponse<T>(response);
 }
