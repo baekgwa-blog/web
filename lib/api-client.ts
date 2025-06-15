@@ -1,4 +1,4 @@
-const API_URL = process.env.API_SERVER_URL || 'https://blog.api.baekgwa.site';
+const API_URL = process.env.NEXT_PUBLIC_API_SERVER_URL || 'https://blog.api.baekgwa.site';
 
 export interface ApiResponse<T> {
   isSuccess: boolean;
@@ -26,13 +26,13 @@ async function handleResponse<T>(response: Response): Promise<T> {
 
 export async function fetchApi<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const url = `${API_URL}${endpoint}`;
+  console.log('🔍 API_URL =', API_URL, '➡️ 최종 url =', url);
   const response = await fetch(url, {
     ...options,
     headers: {
       'Content-Type': 'application/json',
       ...options?.headers,
     },
-    credentials: 'include',
   });
   return handleResponse<T>(response);
 }

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
 import { LoginForm } from '../features/user/LoginForm';
 import { useAuthStore } from '@/lib/store/auth';
+import { LogoutButton } from '../features/user/LogoutButton';
 
 export default function Header() {
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
@@ -31,11 +32,15 @@ export default function Header() {
           </nav>
           <div className="flex items-center justify-end gap-2">
             <ThemeToggle />
-            {!isLoggedIn && <LoginForm />}
-            {isLoggedIn && (
-              <Button asChild size="sm" className="gap-2">
-                <Link href="/blog/write">글쓰기</Link>
-              </Button>
+            {isLoggedIn ? (
+              <>
+                <Button asChild size="sm" className="gap-2">
+                  <Link href="/blog/write">글쓰기</Link>
+                </Button>
+                <LogoutButton />
+              </>
+            ) : (
+              <LoginForm />
             )}
           </div>
         </div>

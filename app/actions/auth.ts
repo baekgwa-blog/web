@@ -1,21 +1,19 @@
-'use server';
-
-import { postLogin } from '@/lib/api/auth';
+import { postLogin, postLogout } from '@/lib/api/auth';
 import { z } from 'zod';
 
 const loginSchema = z.object({
-  username: z.string().min(1, { message: '아이디를 입력해주세요.' }),
+  loginId: z.string().min(1, { message: '아이디를 입력해주세요.' }),
   password: z.string().min(1, { message: '비밀번호를 입력해주세요.' }),
 });
 
 export interface LoginFormState {
   message: string;
   errors?: {
-    username?: string[];
+    loginId?: string[];
     password?: string[];
   };
   formData?: {
-    username: string;
+    loginId: string;
     password: string;
   };
   success?: boolean;
@@ -23,7 +21,7 @@ export interface LoginFormState {
 
 export async function loginAction(prevState: LoginFormState, formData: FormData) {
   const rawFormData = {
-    username: formData.get('username') as string,
+    loginId: formData.get('loginId') as string,
     password: formData.get('password') as string,
   };
 
@@ -38,9 +36,9 @@ export async function loginAction(prevState: LoginFormState, formData: FormData)
   }
 
   try {
-    const { username, password } = validatedFields.data;
+    const { loginId, password } = validatedFields.data;
 
-    await postLogin({ username, password });
+    await postLogin({ loginId, password });
 
     return {
       success: true,
@@ -50,6 +48,21 @@ export async function loginAction(prevState: LoginFormState, formData: FormData)
     return {
       message: '로그인에 실패했습니다.',
       formData: rawFormData,
+    };
+  }
+}
+
+export async function logoutAction() {
+  try {
+    await postLogout();
+
+    return {
+      success: true,
+      message: '로그아웃에 성공했습니다.',
+    };
+  } catch {
+    return {
+      message: '로그아웃에 실패했습니다.',
     };
   }
 }

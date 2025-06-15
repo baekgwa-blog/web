@@ -9,7 +9,13 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2 } from 'lucide-react';
 import { loginAction } from '@/app/actions/auth';
 import { useAuthStore } from '@/lib/store/auth';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 
 export function LoginForm() {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,7 +24,7 @@ export function LoginForm() {
     message: '',
     errors: {},
     formData: {
-      username: '',
+      loginId: '',
       password: '',
     },
   });
@@ -39,6 +45,7 @@ export function LoginForm() {
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>로그인</DialogTitle>
+            <DialogDescription>백과 블로그 로그인 하기</DialogDescription>
           </DialogHeader>
           <form action={formAction} className="space-y-4">
             {state?.message && (
@@ -48,16 +55,16 @@ export function LoginForm() {
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="username">아이디</Label>
+              <Label htmlFor="loginId">아이디</Label>
               <Input
-                id="username"
-                name="username"
+                id="loginId"
+                name="loginId"
                 placeholder="아이디를 입력해주세요"
                 className="h-12"
-                defaultValue={state?.formData?.username}
+                defaultValue={state?.formData?.loginId}
               />
-              {state?.errors?.username && (
-                <p className="text-destructive text-sm">{state.errors.username[0]}</p>
+              {state?.errors?.loginId && (
+                <p className="text-destructive text-sm">{state.errors.loginId[0]}</p>
               )}
             </div>
 
