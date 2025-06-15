@@ -1,12 +1,6 @@
 import { fetchApi } from '../api-client';
 import { TagFilterItem } from '@/types/blog';
-
-export interface ApiResponse<T> {
-  isSuccess: boolean;
-  code: string;
-  message: string;
-  data: T | null;
-}
+import { ApiResponse } from '@/lib/api-client';
 
 export interface CategoryItem {
   name: string;

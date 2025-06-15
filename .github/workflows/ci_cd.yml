@@ -31,7 +31,7 @@ jobs:
           build-args: |
             NOTION_TOKEN=${{ secrets.NOTION_TOKEN }}
             NOTION_DATABASE_ID=${{ secrets.NOTION_DATABASE_ID }}
-            API_SERVER_URL=${{ secrets.API_SERVER_URL }}
+            NEXT_PUBLIC_API_SERVER_URL=${{ secrets.NEXT_PUBLIC_API_SERVER_URL }}
 
       - name: SSH into EC2 and Deploy
         uses: appleboy/ssh-action@v0.1.6
