@@ -26,7 +26,7 @@ async function handleResponse<T>(response: Response): Promise<T> {
 
 export async function fetchApi<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const url = `${API_URL}${endpoint}`;
-  console.log('🔍 API_URL =', API_URL, '➡️ 최종 url =', url);
+  // console.log('🔍 API_URL =', API_URL, '➡️ 최종 url =', url);
   const response = await fetch(url, {
     ...options,
     headers: {
