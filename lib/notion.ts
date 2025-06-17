@@ -1,5 +1,5 @@
 import { Client } from '@notionhq/client';
-import type { Post, TagFilterItem } from '@/types/blog';
+import type { Post, CategoryFilterItem } from '@/types/blog';
 import type {
   PageObjectResponse,
   PersonUserObjectResponse,
@@ -154,7 +154,7 @@ export const getPublishedPosts = async ({
   };
 };
 
-export const getTags = async (): Promise<TagFilterItem[]> => {
+export const getTags = async (): Promise<CategoryFilterItem[]> => {
   const { posts } = await getPublishedPosts({ pageSize: 100 });
 
   // 모든 태그를 추출하고 각 태그의 출현 횟수를 계산
@@ -169,7 +169,7 @@ export const getTags = async (): Promise<TagFilterItem[]> => {
   );
 
   // TagFilterItem 형식으로 변환
-  const tags: TagFilterItem[] = Object.entries(tagCount).map(([name, count]) => ({
+  const tags: CategoryFilterItem[] = Object.entries(tagCount).map(([name, count]) => ({
     id: name,
     name,
     count,
