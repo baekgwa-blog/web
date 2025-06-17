@@ -1,36 +1,36 @@
 import { getPublishedPosts } from '@/lib/notion';
-import { getTags } from '@/lib/api/tags';
+import { getCategories } from '@/lib/api/category';
 import HeaderSection from '@/app/_components/HeaderSection';
 import PostListSuspense from '@/components/features/blog/PostListSuspense';
 import { Suspense } from 'react';
-import TagSectionClient from '@/app/_components/TagSection.client';
+import CategorySectionClient from '@/components/features/category/CategorySection.client';
+import CategorySectionSkeleton from '@/components/features/category/CategorySectionSkeleton';
 import PostListSkeleton from '@/components/features/blog/PostListSkeleton';
-import TagSectionSkeleton from '@/app/_components/TagSectionSkeleton';
 
 interface HomeProps {
-  searchParams: Promise<{ tag?: string; sort?: string }>;
+  searchParams: Promise<{ category?: string; sort?: string }>;
 }
 
 export default async function Home({ searchParams }: HomeProps) {
-  const { tag, sort } = await searchParams;
-  const selectedTag = tag || '전체';
+  const { category, sort } = await searchParams;
+  const selectedCategory = category || '전체';
   const selectedSort = sort || 'latest';
 
-  const tags = getTags();
-  const postsPromise = getPublishedPosts({ tag: selectedTag, sort: selectedSort });
+  const categories = getCategories();
+  const postsPromise = getPublishedPosts({ tag: selectedCategory, sort: selectedSort });
 
   return (
     <div className="container py-8">
       <div className="grid grid-cols-1 gap-6 md:grid-cols-[200px_1fr]">
         {/* 좌측 사이드바 */}
         <aside className="order-1 md:order-none">
-          <Suspense fallback={<TagSectionSkeleton />}>
-            <TagSectionClient tags={tags} selectedTag={selectedTag} />
+          <Suspense fallback={<CategorySectionSkeleton />}>
+            <CategorySectionClient categories={categories} selectedCategory={selectedCategory} />
           </Suspense>
         </aside>
         <div className="order-2 space-y-8 md:order-none">
           {/* 섹션 제목 */}
-          <HeaderSection selectedTag={selectedTag} />
+          <HeaderSection selectedCategory={selectedCategory} />
           {/* 블로그 카드 그리드 */}
           <Suspense fallback={<PostListSkeleton />}>
             <PostListSuspense postsPromise={postsPromise} />

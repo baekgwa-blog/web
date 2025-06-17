@@ -1,4 +1,4 @@
-export interface TagFilterItem {
+export interface CategoryFilterItem {
   id: string;
   name: string;
   count: number;
