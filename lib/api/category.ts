@@ -1,5 +1,5 @@
 import { fetchApi } from '../api-client';
-import { TagFilterItem } from '@/types/blog';
+import { CategoryFilterItem } from '@/types/blog';
 import { ApiResponse } from '@/lib/api-client';
 
 export interface CategoryItem {
@@ -7,7 +7,7 @@ export interface CategoryItem {
   id: number;
 }
 
-export async function getTags(): Promise<TagFilterItem[]> {
+export async function getCategories(): Promise<CategoryFilterItem[]> {
   try {
     const response = await fetchApi<ApiResponse<CategoryItem[]>>('/category');
 
