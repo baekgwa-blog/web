@@ -62,7 +62,7 @@ export default function PostList({ postsPromise }: PostListProps) {
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {allPosts.map((post, index) => (
           <Link href={`/blog/${post.slug}`} key={post.id}>
             <PostCard post={post} isFirst={index === 0} />
@@ -73,7 +73,7 @@ export default function PostList({ postsPromise }: PostListProps) {
       {isFetchingNextPage && (
         <div className="flex items-center justify-center gap-2 py-4">
           <Loader2 className="text-muted-foreground h-4 w-4 animate-spin" />
-          <span className="text-muted-foreground text-sm">로딩중...</span>
+          <span className="text-muted-foreground text-sm">로딩 중...</span>
         </div>
       )}
       {/* {hasNextPage && (
