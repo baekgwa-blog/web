@@ -21,6 +21,10 @@ export default async function Home({ searchParams }: HomeProps) {
 
   return (
     <div className="container py-8">
+      {/* 메인페이지 헤더 섹션, 추후 검색 추가 */}
+      <div className="mb-8">
+        <HeaderSection selectedCategory={selectedCategory} />
+      </div>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-[200px_1fr]">
         {/* 좌측 사이드바 */}
         <aside className="order-1 md:order-none">
@@ -29,8 +33,6 @@ export default async function Home({ searchParams }: HomeProps) {
           </Suspense>
         </aside>
         <div className="order-2 space-y-8 md:order-none">
-          {/* 섹션 제목 */}
-          <HeaderSection selectedCategory={selectedCategory} />
           {/* 블로그 카드 그리드 */}
           <Suspense fallback={<PostListSkeleton />}>
             <PostListSuspense postsPromise={postsPromise} />
