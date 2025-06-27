@@ -1,4 +1,3 @@
-import { getPublishedPosts } from '@/lib/notion';
 import { getCategories } from '@/lib/api/category';
 import HeaderSection from '@/app/_components/HeaderSection';
 import PostListSuspense from '@/components/features/blog/PostListSuspense';
@@ -6,6 +5,7 @@ import { Suspense } from 'react';
 import CategorySectionClient from '@/components/features/category/CategorySection.client';
 import CategorySectionSkeleton from '@/components/features/category/CategorySectionSkeleton';
 import PostListSkeleton from '@/components/features/blog/PostListSkeleton';
+import { getPostList } from '@/lib/api/post';
 
 interface HomeProps {
   searchParams: Promise<{ category?: string; sort?: string }>;
@@ -13,23 +13,20 @@ interface HomeProps {
 
 export default async function Home({ searchParams }: HomeProps) {
   const { category, sort } = await searchParams;
-  const selectedCategory = category || '전체';
-  const selectedSort = sort || 'latest';
-
   const categories = getCategories();
-  const postsPromise = getPublishedPosts({ tag: selectedCategory, sort: selectedSort });
+  const postsPromise = getPostList({ category: category, sort: sort, page: 0 });
 
   return (
     <div className="container py-8">
       {/* 메인페이지 헤더 섹션, 추후 검색 추가 */}
       <div className="mb-8">
-        <HeaderSection selectedCategory={selectedCategory} />
+        <HeaderSection selectedCategory={category} />
       </div>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-[200px_1fr]">
         {/* 좌측 사이드바 */}
         <aside className="order-1 md:order-none">
           <Suspense fallback={<CategorySectionSkeleton />}>
-            <CategorySectionClient categories={categories} selectedCategory={selectedCategory} />
+            <CategorySectionClient categories={categories} selectedCategory={category} />
           </Suspense>
         </aside>
         <div className="order-2 space-y-8 md:order-none">

@@ -3,54 +3,51 @@
 import Link from 'next/link';
 import { PostCard } from '@/components/features/blog/PostCard';
 import { Loader2 } from 'lucide-react';
-import { GetPublishedPostsResponse } from '@/lib/notion';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, use } from 'react';
 import { useInView } from 'react-intersection-observer';
+import { ApiResponse } from '@/lib/api-client';
+import { PostListItem } from '@/types/post';
+import { PagingResponse } from '@/types/paging';
 
 interface PostListProps {
-  postsPromise: Promise<GetPublishedPostsResponse>;
+  postsPromise: Promise<ApiResponse<PagingResponse<PostListItem>>>;
 }
 
 export default function PostList({ postsPromise }: PostListProps) {
   const initialData = use(postsPromise);
   const searchParams = useSearchParams();
-  const tag = searchParams.get('tag');
+  const category = searchParams.get('category');
   const sort = searchParams.get('sort');
 
-  const fetchPosts = async ({ pageParam }: { pageParam: string | undefined }) => {
+  const fetchPosts = async ({ pageParam = 0 }: { pageParam?: number }) => {
     const params = new URLSearchParams();
-    if (tag) params.set('tag', tag);
+    if (category) params.set('category', category);
     if (sort) params.set('sort', sort);
-    if (pageParam) params.set('startCursor', pageParam);
+    params.set('page', pageParam.toString());
 
-    const response = await fetch(`/api/posts?${params.toString()}`);
+    const response = await fetch(`/api/post?${params.toString()}`);
     if (!response.ok) {
-      throw new Error('Failed to fetch posts');
+      throw new Error('Failed to fetch post');
     }
     return response.json();
   };
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-    queryKey: ['posts', tag, sort],
+    queryKey: ['posts', category, sort],
     queryFn: fetchPosts,
-    initialPageParam: undefined,
-    getNextPageParam: (lastPage) => lastPage.nextCursor,
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => {
+      return lastPage.data.last ? undefined : lastPage.data.pageNo + 1;
+    },
     initialData: {
       pages: [initialData],
-      pageParams: [undefined],
+      pageParams: [0],
     },
   });
 
-  const { ref, inView } = useInView({
-    threshold: 1,
-  });
-  // const handleLoadMore = () => {
-  //   if (hasNextPage && !isFetchingNextPage) {
-  //     fetchNextPage();
-  //   }
-  // };
+  const { ref, inView } = useInView({ threshold: 1 });
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
@@ -58,12 +55,29 @@ export default function PostList({ postsPromise }: PostListProps) {
     }
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  const allPosts = data?.pages.flatMap((page) => page.posts) ?? [];
+  // 모든 페이지의 content를 flat하게 합침
+  const allPosts: PostListItem[] =
+    data?.pages.flatMap(
+      (page: ApiResponse<PagingResponse<PostListItem>>) => page.data?.content ?? []
+    ) ?? [];
+
+  // PostListItem[] → Post[] 변환
+  const mappedPosts = allPosts.map((item) => ({
+    id: String(item.id),
+    title: item.title,
+    description: item.description,
+    coverImage: item.thumbnailImage,
+    tags: item.tagList,
+    author: '백과',
+    date: item.createdAt,
+    modifiedDate: item.modifiedAt,
+    slug: item.slug,
+  }));
 
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {allPosts.map((post, index) => (
+        {mappedPosts.map((post, index) => (
           <Link href={`/blog/${post.slug}`} key={post.id}>
             <PostCard post={post} isFirst={index === 0} />
           </Link>
@@ -76,19 +90,6 @@ export default function PostList({ postsPromise }: PostListProps) {
           <span className="text-muted-foreground text-sm">로딩 중...</span>
         </div>
       )}
-      {/* {hasNextPage && (
-        <div>
-          <Button
-            variant="outline"
-            size="lg"
-            className="w-full"
-            onClick={handleLoadMore}
-            disabled={isFetchingNextPage}
-          >
-            {isFetchingNextPage ? '로딩중...' : '더보기'}
-          </Button>
-        </div>
-      )} */}
     </div>
   );
 }

@@ -8,7 +8,7 @@ import { use } from 'react';
 
 interface CategorySectionProps {
   categories: Promise<CategoryFilterItem[]>;
-  selectedCategory: string;
+  selectedCategory?: string;
 }
 
 export default function CategorySection({ categories, selectedCategory }: CategorySectionProps) {
