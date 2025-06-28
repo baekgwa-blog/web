@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { PostCard } from '@/components/features/blog/PostCard';
 import { Loader2 } from 'lucide-react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
@@ -10,6 +9,7 @@ import { useInView } from 'react-intersection-observer';
 import { ApiResponse } from '@/lib/api-client';
 import { PostListItem } from '@/types/post';
 import { PagingResponse } from '@/types/paging';
+import { PostCard } from '@/components/features/blog/main/PostCard';
 
 interface PostListProps {
   postsPromise: Promise<ApiResponse<PagingResponse<PostListItem>>>;

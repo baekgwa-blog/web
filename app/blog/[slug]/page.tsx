@@ -5,9 +5,9 @@ import withSlugs from 'rehype-slug';
 import withToc from '@stefanprobst/rehype-extract-toc';
 import withTocExport from '@stefanprobst/rehype-extract-toc/mdx';
 import { getPostDetail } from '@/lib/api/post';
-import { PostToc } from '@/components/features/blog/PostToc';
-import { PostDetailHeader } from '@/components/features/blog/PostDetailHeader';
-import { PostDetailContent } from '@/components/features/blog/PostDetailContent';
+import { PostDetailHeader } from '@/components/features/blog/detail/PostDetailHeader';
+import { PostDetailContent } from '@/components/features/blog/detail/PostDetailContent';
+import { PostDetailToc } from '@/components/features/blog/detail/PostDetailToc';
 
 interface BlogPostProps {
   params: Promise<{ slug: string }>;
@@ -41,7 +41,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
             <details className="bg-muted/60 rounded-lg p-4 backdrop-blur-sm">
               <summary className="cursor-pointer text-lg font-semibold">목차</summary>
               <div className="mt-3">
-                <PostToc toc={data?.toc || []} />
+                <PostDetailToc toc={data?.toc || []} />
               </div>
             </details>
           </div>
@@ -56,7 +56,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
           <div className="sticky top-[var(--sticky-top)]">
             <div className="bg-muted/60 space-y-4 rounded-lg p-6 backdrop-blur-sm">
               <h3 className="text-lg font-semibold">목차</h3>
-              <PostToc toc={data?.toc || []} />
+              <PostDetailToc toc={data?.toc || []} />
             </div>
           </div>
         </aside>

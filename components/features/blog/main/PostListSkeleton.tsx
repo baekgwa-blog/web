@@ -1,4 +1,5 @@
 import { Skeleton } from '@/components/ui/skeleton';
+
 export default function PostListSkeleton() {
   return (
     <div className="grid grid-cols-1 gap-4">

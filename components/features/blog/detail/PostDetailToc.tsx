@@ -37,7 +37,7 @@ interface PostTocProps {
   className?: string;
 }
 
-export function PostToc({ toc, className = '' }: PostTocProps) {
+export function PostDetailToc({ toc, className = '' }: PostTocProps) {
   return (
     <nav className={`space-y-3 text-sm ${className}`}>
       {toc?.map((item) => <TableOfContentsLink key={item.id} item={item} />)}

@@ -1,11 +1,11 @@
 import { getCategories } from '@/lib/api/category';
-import PostListSuspense from '@/components/features/blog/PostListSuspense';
 import { Suspense } from 'react';
 import CategorySectionClient from '@/components/features/category/CategorySection.client';
 import CategorySectionSkeleton from '@/components/features/category/CategorySectionSkeleton';
-import PostListSkeleton from '@/components/features/blog/PostListSkeleton';
 import { getPostList } from '@/lib/api/post';
 import BlogMainHeaderSection from '@/components/features/blog/main/BlogMainHeaderSection';
+import PostListSkeleton from '@/components/features/blog/main/PostListSkeleton';
+import PostListSuspense from '@/components/features/blog/main/PostListSuspense';
 
 interface HomeProps {
   searchParams: Promise<{ category?: string; sort?: string; keyword?: string }>;
