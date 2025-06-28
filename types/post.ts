@@ -20,6 +20,7 @@ export interface PostDetailItem {
   slug: string;
   tagList: string[];
   category: string;
+  author: string;
   createdAt: string;
   modifiedAt: string;
 }

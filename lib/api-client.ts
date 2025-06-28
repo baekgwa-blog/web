@@ -4,7 +4,7 @@ export interface ApiResponse<T> {
   isSuccess: boolean;
   code: string;
   message: string;
-  data: T | null;
+  data: T;
 }
 
 export class ApiError extends Error {
