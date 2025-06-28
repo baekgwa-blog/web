@@ -10,3 +10,16 @@ export interface PostListItem {
   createdAt: string;
   modifiedAt: string;
 }
+
+export interface PostDetailItem {
+  id: number;
+  title: string;
+  content: string;
+  description: string;
+  thumbnailImage: string;
+  slug: string;
+  tagList: string[];
+  category: string;
+  createdAt: string;
+  modifiedAt: string;
+}
