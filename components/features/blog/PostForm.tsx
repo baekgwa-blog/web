@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import { useActionState } from 'react';
-import { createPostAction } from '@/app/actions/blog';
+import { createPostAction } from '@/lib/actions/blog';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';

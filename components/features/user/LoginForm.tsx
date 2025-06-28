@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2 } from 'lucide-react';
-import { loginAction } from '@/app/actions/auth';
+import { loginAction } from '@/lib/actions/auth';
 import { useAuthStore } from '@/lib/store/auth';
 import {
   Dialog,
