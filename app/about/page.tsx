@@ -1,4 +1,4 @@
-import ProfileSection from '../_components/ProfileSection';
+import ProfileSection from '@/components/features/about/ProfileSection';
 
 export default function About() {
   return (
