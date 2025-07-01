@@ -18,8 +18,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
   const decodedSlug = decodeURIComponent(slug);
   const response = await getPostDetail({ slug: decodedSlug });
 
-  //TOC 추출
-  const { data } = await compile(response.data.content, {
+  const { data } = await compile(response.content, {
     rehypePlugins: [withSlugs, rehypeSanitize, withToc, withTocExport],
   });
 
@@ -28,10 +27,10 @@ export default async function BlogPost({ params }: BlogPostProps) {
       <div className="grid grid-cols-1 gap-4 md:grid-cols-[1fr_240px] md:gap-8">
         <section>
           <PostDetailHeader
-            title={response.data.title}
-            tagList={response.data.tagList}
-            author={response.data.author}
-            createdAt={response.data.createdAt}
+            title={response.title}
+            tagList={response.tagList}
+            author={response.author}
+            createdAt={response.createdAt}
           />
 
           <Separator className="my-6 border-2" />
@@ -47,7 +46,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
           </div>
 
           {/* 블로그 본문 */}
-          <PostDetailContent content={response.data.content} />
+          <PostDetailContent content={response.content} />
 
           <Separator className="my-16" />
         </section>

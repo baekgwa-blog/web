@@ -46,9 +46,7 @@ export const getPostList = async ({
   }
 };
 
-export const getPostDetail = async ({
-  slug,
-}: GetPostDetailParams): Promise<ApiResponse<PostDetailItem>> => {
+export const getPostDetail = async ({ slug }: GetPostDetailParams): Promise<PostDetailItem> => {
   const params = new URLSearchParams();
   if (slug) params.set('slug', slug);
 
@@ -56,7 +54,7 @@ export const getPostDetail = async ({
     const response = await fetchApi<ApiResponse<PostDetailItem>>(
       `/post/detail?${params.toString()}`
     );
-    return response;
+    return response.data!;
   } catch {
     notFound();
   }

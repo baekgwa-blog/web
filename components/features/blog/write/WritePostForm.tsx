@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useActionState, useRef, useState, useCallback } from 'react';
+import { useEffect, useActionState, useRef, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import dynamic from 'next/dynamic';
 import '@toast-ui/editor/dist/toastui-editor.css';
@@ -22,6 +22,14 @@ import {
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import type { Editor as EditorType } from '@toast-ui/react-editor';
+import {
+  Command,
+  CommandInput,
+  CommandList,
+  CommandItem,
+  CommandEmpty,
+} from '@/components/ui/command';
+import { Checkbox } from '@/components/ui/checkbox';
 
 const Editor = dynamic(() => import('@toast-ui/react-editor').then((mod) => mod.Editor), {
   ssr: false,
@@ -35,6 +43,7 @@ export default function WritePostForm() {
   const [description, setDescription] = useState('');
   const [tagOptions, setTagOptions] = useState<TagItem[]>([]);
   const [selectedTags, setSelectedTags] = useState<TagItem[]>([]);
+  const [tagSearch, setTagSearch] = useState('');
   const [categoryOptions, setCategoryOptions] = useState<CategoryList[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [editorContent, setEditorContent] = useState('');
@@ -63,8 +72,18 @@ export default function WritePostForm() {
     getCategories().then(setCategoryOptions);
   }, []);
 
+  useEffect(() => {
+    getTagList({ keyword: tagSearch }).then(setTagOptions);
+  }, [tagSearch]);
+
   const handleEditorChange = () => {
     setEditorContent(editorRef.current?.getInstance().getMarkdown() || '');
+  };
+
+  const handleTagToggle = (tag: TagItem) => {
+    setSelectedTags((prev) =>
+      prev.some((t) => t.id === tag.id) ? prev.filter((t) => t.id !== tag.id) : [...prev, tag]
+    );
   };
 
   return (
@@ -115,6 +134,32 @@ export default function WritePostForm() {
             ))}
           </SelectContent>
         </Select>
+        <Command>
+          <CommandInput placeholder="태그 검색" value={tagSearch} onValueChange={setTagSearch} />
+          <CommandList>
+            <CommandEmpty>검색 결과가 없습니다.</CommandEmpty>
+            {tagOptions.map((tag) => (
+              <CommandItem key={tag.id} className="flex items-center gap-2">
+                <Checkbox
+                  checked={selectedTags.some((t) => t.id === tag.id)}
+                  onCheckedChange={() => {
+                    // 이벤트 버블링 방지
+                    event?.stopPropagation?.();
+                    handleTagToggle(tag);
+                  }}
+                />
+                <span>{tag.name}</span>
+              </CommandItem>
+            ))}
+          </CommandList>
+        </Command>
+        <div className="mt-2 flex flex-wrap gap-2">
+          {selectedTags.map((tag) => (
+            <Badge key={tag.id} variant="secondary">
+              {tag.name}
+            </Badge>
+          ))}
+        </div>
         <Editor
           theme="dark"
           initialValue=""
@@ -132,7 +177,6 @@ export default function WritePostForm() {
           </Button>
         </div>
       </div>
-      {/* hidden input으로 FormData에 값 포함시키기 */}
       <input type="hidden" name="content" value={editorContent} />
       <input
         type="hidden"

@@ -2,12 +2,12 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
-import { CategoryFilterItem } from '@/types/blog';
 import { cn } from '@/lib/utils';
 import { use } from 'react';
+import { CategoryList } from '@/lib/api/category';
 
 interface CategorySectionProps {
-  categories: Promise<CategoryFilterItem[]>;
+  categories: Promise<CategoryList[]>;
   selectedCategory?: string;
 }
 
