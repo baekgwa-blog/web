@@ -24,6 +24,11 @@ const nextConfig = {
         hostname: 'picsum.photos',
         pathname: '**',
       },
+      {
+        protocol: 'https',
+        hostname: 'velog.velcdn.com',
+        pathname: '**',
+      },
     ],
   },
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'mdx', 'md'],

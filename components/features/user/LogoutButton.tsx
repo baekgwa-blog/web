@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/lib/store/auth';
 import { Button } from '@/components/ui/button';
-import { logoutAction } from '@/app/actions/auth';
+import { logoutAction } from '@/lib/actions/auth';
 
 export function LogoutButton() {
   const logout = useAuthStore((state) => state.logout);

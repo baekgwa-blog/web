@@ -13,7 +13,7 @@ export default function SortSelect() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const sort = searchParams.get('sort') || 'latest';
+  const sort = searchParams.get('sort') || 'LATEST';
 
   const handleSort = (value: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -27,8 +27,9 @@ export default function SortSelect() {
         <SelectValue placeholder="정렬 방식 선택" />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="latest">최신순</SelectItem>
-        <SelectItem value="oldest">오래된순</SelectItem>
+        <SelectItem value="LATEST">최신순</SelectItem>
+        <SelectItem value="OLDEST">오래된순</SelectItem>
+        <SelectItem value="VIEW">조회순</SelectItem>
       </SelectContent>
     </Select>
   );
