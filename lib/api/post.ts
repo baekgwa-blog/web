@@ -1,6 +1,6 @@
 import { fetchApi } from '../api-client';
 import { ApiResponse } from '@/lib/api-client';
-import { PostListItem, PostDetailItem } from '@/types/post';
+import { PostListItem, PostDetailItem, CreatePostResponse } from '@/types/post';
 import { PagingResponse } from '@/types/paging';
 import { notFound } from 'next/navigation';
 
@@ -13,6 +13,15 @@ export interface GetPostListParams {
 
 export interface GetPostDetailParams {
   slug: string;
+}
+
+export interface CreatePostBodys {
+  title: string;
+  content: string;
+  description: string;
+  thumbnailImage: string | null;
+  tagIdList: number[];
+  categoryId: number;
 }
 
 export const getPostList = async ({
@@ -51,4 +60,27 @@ export const getPostDetail = async ({
   } catch {
     notFound();
   }
+};
+
+export const createPost = async ({
+  title,
+  content,
+  description,
+  thumbnailImage,
+  tagIdList,
+  categoryId,
+}: CreatePostBodys): Promise<ApiResponse<CreatePostResponse>> => {
+  const response = await fetchApi<ApiResponse<CreatePostResponse>>('/post', {
+    method: 'POST',
+    credentials: 'include',
+    body: JSON.stringify({
+      title,
+      content,
+      description,
+      thumbnailImage,
+      tagIdList,
+      categoryId,
+    }),
+  });
+  return response;
 };

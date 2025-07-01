@@ -1,9 +1,9 @@
-import { PostForm } from '@/components/features/blog/PostForm';
+import WritePostForm from '@/components/features/blog/write/WritePostForm';
 
 export default function WritePage() {
   return (
-    <div className="container py-10">
-      <PostForm />
+    <div className="px-4 py-4">
+      <WritePostForm />
     </div>
   );
 }

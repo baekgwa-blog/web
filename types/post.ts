@@ -24,3 +24,7 @@ export interface PostDetailItem {
   createdAt: string;
   modifiedAt: string;
 }
+
+export interface CreatePostResponse {
+  slug: string;
+}
