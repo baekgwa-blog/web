@@ -14,7 +14,7 @@ const postSchema = z.object({
     .max(100, { message: '설명은 100자 이하로 입력해주세요.' }),
   thumbnailImage: z.string().nullable(),
   tagIdList: z.array(z.number()).min(1, { message: '태그를 1개 이상 선택해주세요.' }),
-  categoryId: z.number(),
+  categoryId: z.number().min(1, { message: '카테고리를 선택해주세요.' }),
 });
 
 export interface CreatePostFormState {
@@ -37,13 +37,14 @@ export async function createPostAction(
       typeof formData.get('thumbnailImage') === 'string'
         ? (formData.get('thumbnailImage') as string)
         : null,
-    tagIdList: formData.getAll('tagIdList').map((v) => Number(v)),
+    tagIdList: JSON.parse(formData.get('tagIdList') as string) as number[],
     categoryId: Number(formData.get('categoryId')),
   };
 
   const validated = postSchema.safeParse(rawFormData);
 
   if (!validated.success) {
+    console.log(validated);
     return {
       errors: validated.error.flatten().fieldErrors,
       message: '유효성 검사에 실패했습니다.',
