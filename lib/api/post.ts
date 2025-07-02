@@ -1,5 +1,4 @@
-import { fetchApi } from '../api-client';
-import { ApiResponse } from '@/lib/api-client';
+import { ApiResponse, fetchApi } from '@/lib/api-client';
 import { PostListItem, PostDetailItem, CreatePostResponse } from '@/types/post';
 import { PagingResponse } from '@/types/paging';
 import { notFound } from 'next/navigation';

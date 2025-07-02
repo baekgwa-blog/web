@@ -12,7 +12,6 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   Select,
   SelectTrigger,
@@ -30,6 +29,7 @@ import {
   CommandEmpty,
 } from '@/components/ui/command';
 import { Checkbox } from '@/components/ui/checkbox';
+import { uploadImage, FileType } from '@/lib/api/upload';
 
 const Editor = dynamic(() => import('@toast-ui/react-editor').then((mod) => mod.Editor), {
   ssr: false,
@@ -86,14 +86,22 @@ export default function WritePostForm() {
     );
   };
 
+  const handleImageUpload = async (
+    blob: Blob,
+    callback: (url: string, altText?: string) => void
+  ) => {
+    try {
+      const file = new File([blob], 'clipboard-image.png', { type: blob.type });
+      const result = await uploadImage({ file, type: FileType.POST_IMAGE });
+      callback(result.fileUrl, result.fileName);
+    } catch {
+      alert('이미지 업로드에 실패했습니다.');
+    }
+  };
+
   return (
     <form action={formAction}>
       <div className="flex flex-col gap-2">
-        {state?.message && (
-          <Alert className={`mb-6 ${state.errors ? 'bg-red-50' : 'bg-green-50'}`}>
-            <AlertDescription>{state.message}</AlertDescription>
-          </Alert>
-        )}
         <Input
           type="text"
           name="title"
@@ -104,7 +112,6 @@ export default function WritePostForm() {
           aria-label="제목 입력"
           autoFocus
           value={title}
-          required
         />
         {state?.errors?.title && <p className="text-sm text-red-500">{state.errors.title[0]}</p>}
         <Input
@@ -117,13 +124,12 @@ export default function WritePostForm() {
           aria-label="설명 입력"
           value={description}
           autoFocus
-          required
         />
         {state?.errors?.description && (
           <p className="text-sm text-red-500">{state.errors.description[0]}</p>
         )}
         <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[200px]">
             <SelectValue placeholder="카테고리를 선택하세요" />
           </SelectTrigger>
           <SelectContent>
@@ -134,9 +140,12 @@ export default function WritePostForm() {
             ))}
           </SelectContent>
         </Select>
+        {state?.errors?.categoryId && (
+          <p className="text-sm text-red-500">{state.errors.categoryId[0]}</p>
+        )}
         <Command>
           <CommandInput placeholder="태그 검색" value={tagSearch} onValueChange={setTagSearch} />
-          <CommandList>
+          <CommandList className="max-h-17 overflow-y-auto">
             <CommandEmpty>검색 결과가 없습니다.</CommandEmpty>
             {tagOptions.map((tag) => (
               <CommandItem key={tag.id} className="flex items-center gap-2">
@@ -153,6 +162,9 @@ export default function WritePostForm() {
             ))}
           </CommandList>
         </Command>
+        {state?.errors?.tagIdList && (
+          <p className="text-sm text-red-500">{state.errors.tagIdList[0]}</p>
+        )}
         <div className="mt-2 flex flex-wrap gap-2">
           {selectedTags.map((tag) => (
             <Badge key={tag.id} variant="secondary">
@@ -164,12 +176,18 @@ export default function WritePostForm() {
           theme="dark"
           initialValue=""
           previewStyle="vertical"
-          height="500px"
+          height="700px"
           initialEditType="markdown"
           useCommandShortcut={true}
           ref={editorRef}
           onChange={handleEditorChange}
+          hooks={{
+            addImageBlobHook: handleImageUpload,
+          }}
         />
+        {state?.errors?.content && (
+          <p className="text-sm text-red-500">{state.errors.content[0]}</p>
+        )}
         <div className="mt-6 flex justify-end gap-2">
           <Button type="submit" disabled={isPending}>
             {isPending && <Loader2 className="mr-2 hidden h-4 w-4 animate-spin" />}

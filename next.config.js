@@ -29,6 +29,11 @@ const nextConfig = {
         hostname: 'velog.velcdn.com',
         pathname: '**',
       },
+      {
+        protocol: 'https',
+        hostname: 'baekgwa-blog-s3-bucket.s3.ap-northeast-2.amazonaws.com',
+        pathname: '**',
+      },
     ],
   },
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'mdx', 'md'],
