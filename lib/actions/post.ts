@@ -44,7 +44,6 @@ export async function createPostAction(
   const validated = postSchema.safeParse(rawFormData);
 
   if (!validated.success) {
-    console.log(validated);
     return {
       errors: validated.error.flatten().fieldErrors,
       message: '유효성 검사에 실패했습니다.',

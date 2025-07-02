@@ -36,3 +36,11 @@ export async function fetchApi<T>(endpoint: string, options?: RequestInit): Prom
   });
   return handleResponse<T>(response);
 }
+
+export async function fetchFormApi<T>(endpoint: string, options?: RequestInit): Promise<T> {
+  const url = `${API_URL}${endpoint}`;
+  const response = await fetch(url, {
+    ...options,
+  });
+  return handleResponse<T>(response);
+}

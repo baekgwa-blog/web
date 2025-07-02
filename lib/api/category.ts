@@ -1,5 +1,4 @@
-import { fetchApi } from '../api-client';
-import { ApiResponse } from '@/lib/api-client';
+import { ApiResponse, fetchApi } from '@/lib/api-client';
 
 export interface CategoryList {
   id: string;
