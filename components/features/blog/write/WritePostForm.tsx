@@ -77,7 +77,9 @@ export default function WritePostForm() {
   }, [tagSearch]);
 
   const handleEditorChange = () => {
-    setEditorContent(editorRef.current?.getInstance().getMarkdown() || '');
+    let raw = editorRef.current?.getInstance().getMarkdown() || '';
+    raw = raw.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    setEditorContent(raw);
   };
 
   const handleTagToggle = (tag: TagItem) => {
