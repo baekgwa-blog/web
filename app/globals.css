@@ -107,6 +107,14 @@
   --code-block-background: hsla(0, 0%, 66%, 0.251);
   --code-block-base-color: var(--foreground);
   --code-block-select-color: var(--border);
+
+  --badge-random-1: hsla(200, 80%, 60%, 0.2); /* 파란색 계열 */
+  --badge-random-2: rgba(235, 153, 71, 0.2); /* 주황색 계열 */
+  --badge-random-3: rgba(20, 184, 20, 0.2); /* 초록색 계열 */
+  --badge-random-4: rgba(153, 71, 235, 0.2); /* 보라색 계열 */
+  --badge-random-5: rgba(235, 71, 71, 0.2); /* 빨간색 계열 */
+  --badge-random-6: rgba(235, 235, 71, 0.2); /* 노란색 계열 */
+  --badge-random-7: rgba(71, 235, 235, 0.2); /* 청록색 계열 */
 }
 
 .dark {
@@ -146,6 +154,14 @@
   --code-block-background: var(--card);
   --code-block-base-color: hsl(247, 13%, 73%);
   --code-block-select-color: var(--muted);
+
+  --badge-random-1: hsla(200, 59%, 70%, 0.2);
+  --badge-random-2: hsla(30, 59%, 70%, 0.2);
+  --badge-random-3: hsla(120, 60%, 50%, 0.2);
+  --badge-random-4: hsla(270, 59%, 70%, 0.2);
+  --badge-random-5: hsla(0, 59%, 70%, 0.2);
+  --badge-random-6: hsla(60, 59%, 70%, 0.2);
+  --badge-random-7: hsla(180, 59%, 70%, 0.2);
 }
 
 @layer base {

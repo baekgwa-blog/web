@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 import { useEffect, useActionState, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { getCategories, CategoryList } from '@/lib/api/category';
-import { getTagList, TagItem } from '@/lib/api/tag';
+import { TagItem } from '@/lib/api/tag';
 import { createPostAction } from '@/lib/actions/post';
 import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
@@ -17,16 +17,7 @@ import {
   SelectContent,
   SelectItem,
 } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import {
-  Command,
-  CommandInput,
-  CommandList,
-  CommandItem,
-  CommandEmpty,
-} from '@/components/ui/command';
-import { Checkbox } from '@/components/ui/checkbox';
-import { uploadImage, FileType } from '@/lib/api/upload';
+import TagSelector from './TagSelector';
 const TiptapEditor = dynamic(() => import('../editor/TiptapEditor'), {
   ssr: false,
 });
@@ -36,12 +27,10 @@ export default function WritePostForm() {
   const queryClient = useQueryClient();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [tagOptions, setTagOptions] = useState<TagItem[]>([]);
   const [selectedTags, setSelectedTags] = useState<TagItem[]>([]);
-  const [tagSearch, setTagSearch] = useState('');
   const [categoryOptions, setCategoryOptions] = useState<CategoryList[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
-  const [editorContent, setEditorContent] = useState('');
+  const [editorContent] = useState('');
 
   const [state, formAction, isPending] = useActionState(createPostAction, {
     message: '',
@@ -67,26 +56,6 @@ export default function WritePostForm() {
     getCategories().then(setCategoryOptions);
   }, []);
 
-  useEffect(() => {
-    getTagList({ keyword: tagSearch }).then(setTagOptions);
-  }, [tagSearch]);
-
-  const handleTagToggle = (tag: TagItem) => {
-    setSelectedTags((prev) =>
-      prev.some((t) => t.id === tag.id) ? prev.filter((t) => t.id !== tag.id) : [...prev, tag]
-    );
-  };
-
-  const handleImageUpload = async (file: File): Promise<string> => {
-    try {
-      const result = await uploadImage({ file, type: FileType.POST_IMAGE });
-      return result.fileUrl;
-    } catch {
-      alert('이미지 업로드에 실패했습니다.');
-      return '';
-    }
-  };
-
   return (
     <form action={formAction}>
       <div className="flex flex-col gap-2">
@@ -96,7 +65,7 @@ export default function WritePostForm() {
           id="title"
           onChange={(e) => setTitle(e.target.value)}
           placeholder="제목을 입력하세요"
-          className="h-20 border-none font-bold shadow-none focus:border-none focus:ring-0 md:text-4xl"
+          className="font-title h-16 border-none !text-3xl font-bold shadow-none focus:border-none focus:ring-0"
           aria-label="제목 입력"
           autoFocus
           value={title}
@@ -108,7 +77,7 @@ export default function WritePostForm() {
           id="description"
           onChange={(e) => setDescription(e.target.value)}
           placeholder="설명을 입력하세요"
-          className="h-14 border-none font-bold shadow-none focus:border-none focus:ring-0 md:text-2xl"
+          className="font-title h-10 border-none !text-xl font-bold shadow-none focus:border-none focus:ring-0"
           aria-label="설명 입력"
           value={description}
           autoFocus
@@ -131,35 +100,17 @@ export default function WritePostForm() {
         {state?.errors?.categoryId && (
           <p className="text-sm text-red-500">{state.errors.categoryId[0]}</p>
         )}
-        <Command>
-          <CommandInput placeholder="태그 검색" value={tagSearch} onValueChange={setTagSearch} />
-          <CommandList className="max-h-17 overflow-y-auto">
-            <CommandEmpty>검색 결과가 없습니다.</CommandEmpty>
-            {tagOptions.map((tag) => (
-              <CommandItem key={tag.id} className="flex items-center gap-2">
-                <Checkbox
-                  checked={selectedTags.some((t) => t.id === tag.id)}
-                  onCheckedChange={() => {
-                    // 이벤트 버블링 방지
-                    event?.stopPropagation?.();
-                    handleTagToggle(tag);
-                  }}
-                />
-                <span>{tag.name}</span>
-              </CommandItem>
-            ))}
-          </CommandList>
-        </Command>
-        {state?.errors?.tagIdList && (
-          <p className="text-sm text-red-500">{state.errors.tagIdList[0]}</p>
-        )}
-        <div className="mt-2 flex flex-wrap gap-2">
-          {selectedTags.map((tag) => (
-            <Badge key={tag.id} variant="secondary">
-              {tag.name}
-            </Badge>
-          ))}
-        </div>
+        <TagSelector
+          selectedTags={selectedTags}
+          onTagToggle={(tag) => {
+            setSelectedTags((prev) =>
+              prev.some((t) => t.id === tag.id)
+                ? prev.filter((t) => t.id !== tag.id)
+                : [...prev, tag]
+            );
+          }}
+          error={state?.errors?.tagIdList?.[0]}
+        />
         <TiptapEditor content={editorContent} />
         <div className="mt-6 flex justify-end gap-2">
           <Button type="submit" disabled={isPending}>
