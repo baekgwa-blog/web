@@ -1,10 +1,8 @@
 'use client';
 
-import { useEffect, useActionState, useRef, useState } from 'react';
-import { Input } from '@/components/ui/input';
 import dynamic from 'next/dynamic';
-import '@toast-ui/editor/dist/toastui-editor.css';
-import '@toast-ui/editor/dist/theme/toastui-editor-dark.css';
+import { useEffect, useActionState, useState } from 'react';
+import { Input } from '@/components/ui/input';
 import { getCategories, CategoryList } from '@/lib/api/category';
 import { getTagList, TagItem } from '@/lib/api/tag';
 import { createPostAction } from '@/lib/actions/post';
@@ -20,7 +18,6 @@ import {
   SelectItem,
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import type { Editor as EditorType } from '@toast-ui/react-editor';
 import {
   Command,
   CommandInput,
@@ -30,15 +27,13 @@ import {
 } from '@/components/ui/command';
 import { Checkbox } from '@/components/ui/checkbox';
 import { uploadImage, FileType } from '@/lib/api/upload';
-
-const Editor = dynamic(() => import('@toast-ui/react-editor').then((mod) => mod.Editor), {
+const TiptapEditor = dynamic(() => import('../editor/TiptapEditor'), {
   ssr: false,
 });
 
 export default function WritePostForm() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const editorRef = useRef<EditorType>(null);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [tagOptions, setTagOptions] = useState<TagItem[]>([]);
@@ -76,28 +71,19 @@ export default function WritePostForm() {
     getTagList({ keyword: tagSearch }).then(setTagOptions);
   }, [tagSearch]);
 
-  const handleEditorChange = () => {
-    let raw = editorRef.current?.getInstance().getMarkdown() || '';
-    raw = raw.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    setEditorContent(raw);
-  };
-
   const handleTagToggle = (tag: TagItem) => {
     setSelectedTags((prev) =>
       prev.some((t) => t.id === tag.id) ? prev.filter((t) => t.id !== tag.id) : [...prev, tag]
     );
   };
 
-  const handleImageUpload = async (
-    blob: Blob,
-    callback: (url: string, altText?: string) => void
-  ) => {
+  const handleImageUpload = async (file: File): Promise<string> => {
     try {
-      const file = new File([blob], 'clipboard-image.png', { type: blob.type });
       const result = await uploadImage({ file, type: FileType.POST_IMAGE });
-      callback(result.fileUrl, result.fileName);
+      return result.fileUrl;
     } catch {
       alert('이미지 업로드에 실패했습니다.');
+      return '';
     }
   };
 
@@ -174,22 +160,7 @@ export default function WritePostForm() {
             </Badge>
           ))}
         </div>
-        <Editor
-          theme="dark"
-          initialValue=""
-          previewStyle="vertical"
-          height="700px"
-          initialEditType="markdown"
-          useCommandShortcut={true}
-          ref={editorRef}
-          onChange={handleEditorChange}
-          hooks={{
-            addImageBlobHook: handleImageUpload,
-          }}
-        />
-        {state?.errors?.content && (
-          <p className="text-sm text-red-500">{state.errors.content[0]}</p>
-        )}
+        <TiptapEditor content={editorContent} />
         <div className="mt-6 flex justify-end gap-2">
           <Button type="submit" disabled={isPending}>
             {isPending && <Loader2 className="mr-2 hidden h-4 w-4 animate-spin" />}
@@ -197,6 +168,7 @@ export default function WritePostForm() {
           </Button>
         </div>
       </div>
+      {/* 폼 제출을 위한 hidden input들 */}
       <input type="hidden" name="content" value={editorContent} />
       <input
         type="hidden"
