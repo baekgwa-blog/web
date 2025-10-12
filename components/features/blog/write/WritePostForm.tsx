@@ -11,8 +11,8 @@ import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import TagSelector from './TagSelector';
 import CategorySelector from './CategorySelector';
-import { toast } from 'sonner'; // 1. toast 임포트
-import { cn } from '@/lib/utils'; // 1. cn 유틸리티 임포트
+import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
 
 const TiptapEditor = dynamic(() => import('@/components/editor/TiptapEditor'), {
   ssr: false,
@@ -73,7 +73,6 @@ export default function WritePostForm() {
         id="title"
         onChange={(e) => setTitle(e.target.value)}
         placeholder="제목을 입력하세요"
-        // 3. 에러 시 스타일 변경을 위해 className 수정
         className={cn(
           'font-title h-16 rounded-md border-none !text-3xl font-bold shadow-none focus:border-none focus:ring-0',
           state.errors?.title && 'ring-destructive ring-2'
@@ -82,7 +81,6 @@ export default function WritePostForm() {
         autoFocus
         value={title}
       />
-      {/* 4. 기존 에러 메시지 p 태그 제거 */}
 
       <Input
         type="text"
@@ -90,7 +88,6 @@ export default function WritePostForm() {
         id="description"
         onChange={(e) => setDescription(e.target.value)}
         placeholder="설명을 입력하세요"
-        // 3. 에러 시 스타일 변경을 위해 className 수정
         className={cn(
           'font-title h-10 rounded-md border-none !text-xl font-bold shadow-none focus:border-none focus:ring-0',
           state.errors?.description && 'ring-destructive ring-2'
@@ -98,7 +95,6 @@ export default function WritePostForm() {
         aria-label="설명 입력"
         value={description}
       />
-      {/* 4. 기존 에러 메시지 p 태그 제거 */}
 
       <div className="grid h-10 grid-cols-[300px_1fr] items-stretch gap-4">
         <div className="h-full">
@@ -129,7 +125,6 @@ export default function WritePostForm() {
           발행하기
         </Button>
       </div>
-      {/* 폼 제출을 위한 hidden input들 */}
       <input type="hidden" name="content" value={editorContent} />
       <input
         type="hidden"
