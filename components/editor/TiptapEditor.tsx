@@ -103,13 +103,13 @@ export default function TiptapEditor({
   });
 
   return (
-    <main className="flex flex-1 flex-col overflow-hidden">
+    <div className="flex h-full flex-col">
       {editor && <TiptapToolbar editor={editor} onImageUpload={onImageUpload} />}
 
       <EditorContent
-        className="`flex-1 overflow-y-auto rounded-b-lg border-2 border-t-0 p-4"
+        className="flex-1 overflow-y-auto rounded-b-lg border-2 border-t-0 p-4"
         editor={editor}
       />
-    </main>
+    </div>
   );
 }
