@@ -19,6 +19,15 @@
   font-display: swap;
 }
 
+/* 코드 폰트 */
+@font-face {
+  font-family: 'D2Coding';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_three@1.0/D2Coding.woff')
+    format('woff');
+  font-weight: normal;
+  font-display: swap;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -62,6 +71,7 @@
 
   --font-title: 'Aggravo', var(--font-geist-sans), sans-serif;
   --font-body: 'Paperozi', var(--font-geist-sans), sans-serif;
+  --font-code: 'D2Coding', var(--font-geist-sans), sans-serif;
 }
 
 :root {

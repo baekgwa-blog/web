@@ -15,6 +15,7 @@ export default ({
       contentEditable={false}
       defaultValue={defaultLanguage}
       onChange={(event) => updateAttributes({ language: event.target.value })}
+      className="font-code text-center font-bold"
     >
       <option value="null">auto</option>
       <option disabled>—</option>
