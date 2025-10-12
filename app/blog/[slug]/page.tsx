@@ -1,9 +1,4 @@
 import { Separator } from '@/components/ui/separator';
-import rehypeSanitize from 'rehype-sanitize';
-import { compile } from '@mdx-js/mdx';
-import withSlugs from 'rehype-slug';
-import withToc from '@stefanprobst/rehype-extract-toc';
-import withTocExport from '@stefanprobst/rehype-extract-toc/mdx';
 import { getPostDetail } from '@/lib/api/post';
 import { PostDetailHeader } from '@/components/features/blog/detail/PostDetailHeader';
 import { PostDetailContent } from '@/components/features/blog/detail/PostDetailContent';
