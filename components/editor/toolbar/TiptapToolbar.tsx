@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useRef } from 'react';
 import { Editor } from '@tiptap/react';
 import { Button } from '@/components/ui/button';
 import {
@@ -27,11 +27,28 @@ import {
 } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 
-type ToolbarProps = {
+type Props = {
   editor: Editor;
+  onImageUpload: (file: File) => Promise<string>;
 };
 
-export default function TiptapToolbar({ editor }: ToolbarProps) {
+export default function TiptapToolbar({ editor, onImageUpload }: Props) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const url = await onImageUpload(file);
+      editor.chain().focus().setImage({ src: url }).run();
+    } catch (error) {
+      console.error(error);
+    }
+
+    if (event.target) event.target.value = '';
+  };
+
   return (
     <div className="border-border overflow-hidden rounded-t-lg border">
       {/* 툴바 */}
@@ -165,11 +182,23 @@ export default function TiptapToolbar({ editor }: ToolbarProps) {
         <Separator orientation="vertical" className="h-6" />
 
         {/* 미디어 및 링크 */}
-        {/* <div className="flex items-center gap-1">
-          <Button variant="ghost" size="sm" onClick={handleImageSelect} className="h-8 w-8 p-0">
+        <div className="flex items-center gap-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => fileInputRef.current?.click()}
+            className="h-8 w-8 p-0"
+          >
             <ImageIcon className="h-4 w-4" />
           </Button>
-        </div> */}
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            style={{ display: 'none' }}
+            accept="image/*"
+          />
+        </div>
 
         <Separator orientation="vertical" className="h-6" />
 

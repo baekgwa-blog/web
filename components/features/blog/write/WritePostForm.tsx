@@ -13,6 +13,7 @@ import TagSelector from './TagSelector';
 import CategorySelector from './CategorySelector';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import { FileType, uploadImage } from '@/lib/api/upload';
 
 const TiptapEditor = dynamic(() => import('@/components/editor/TiptapEditor'), {
   ssr: false,
@@ -64,6 +65,22 @@ export default function WritePostForm() {
       toast.dismiss('description-error');
     }
   }, [state.errors?.description]);
+
+  const handleImageUpload = async (file: File): Promise<string> => {
+    const toastId = toast.loading('이미지를 업로드하는 중입니다...');
+    try {
+      const { fileUrl } = await uploadImage({
+        file,
+        type: FileType.POST_IMAGE,
+      });
+      toast.success('이미지 업로드가 완료되었습니다.', { id: toastId });
+      return fileUrl; // 성공 시 URL을 반환합니다.
+    } catch (error) {
+      console.error('Image upload failed:', error);
+      toast.error('이미지 업로드에 실패했습니다.', { id: toastId });
+      throw new Error('Image upload failed'); // 실패 시 에러를 던집니다.
+    }
+  };
 
   return (
     <form action={formAction} className="flex flex-1 flex-col gap-3">
@@ -118,7 +135,11 @@ export default function WritePostForm() {
           />
         </div>
       </div>
-      <TiptapEditor />
+      <TiptapEditor
+        content={editorContent}
+        onContentChange={setEditorContent}
+        onImageUpload={handleImageUpload}
+      />
       <div className="mt-6 flex justify-end gap-2">
         <Button type="submit" disabled={isPending}>
           {isPending && <Loader2 className="mr-2 hidden h-4 w-4 animate-spin" />}
