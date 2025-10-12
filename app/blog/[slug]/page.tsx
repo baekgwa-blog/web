@@ -2,7 +2,9 @@ import { Separator } from '@/components/ui/separator';
 import { getPostDetail } from '@/lib/api/post';
 import { PostDetailHeader } from '@/components/features/blog/detail/PostDetailHeader';
 import { PostDetailContent } from '@/components/features/blog/detail/PostDetailContent';
-import { PostDetailToc, type FlatTocItem } from '@/components/features/blog/detail/PostDetailToc';
+import { MobileToc } from '@/components/features/blog/detail/MobileToc';
+import { DesktopToc } from '@/components/features/blog/detail/DesktopToc';
+import { type FlatTocItem } from '@/components/features/blog/detail/TocList';
 import * as cheerio from 'cheerio';
 
 function isTagElement(node: cheerio.Element): node is cheerio.TagElement {
@@ -28,6 +30,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
 
   return (
     <div className="container py-6 md:py-8 lg:py-12">
+      {/* --- 레이아웃 구조는 page.tsx가 담당 --- */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-[1fr_240px] md:gap-8">
         <section>
           <PostDetailHeader
@@ -39,32 +42,22 @@ export default async function BlogPost({ params }: BlogPostProps) {
 
           <Separator className="my-6 border-2" />
 
-          {/* 모바일 전용 목차 */}
+          {/* --- 모바일 목차 호출 --- */}
           {toc.length > 0 && (
             <div className="mb-6 md:hidden">
-              <details className="bg-muted/60 rounded-lg p-4 backdrop-blur-sm">
-                <summary className="cursor-pointer text-lg font-semibold">목차</summary>
-                <div className="mt-3">
-                  <PostDetailToc toc={toc} />
-                </div>
-              </details>
+              <MobileToc toc={toc} />
             </div>
           )}
 
-          {/* 블로그 본문 */}
           <PostDetailContent content={response.content} />
 
           <Separator className="my-16" />
         </section>
-        {/* PC화면 목차 */}
+
+        {/* --- PC 목차 호출 --- */}
         {toc.length > 0 && (
           <aside className="relative hidden md:block">
-            <div className="sticky top-[var(--sticky-top)]">
-              <div className="bg-muted/60 space-y-4 rounded-lg p-6 backdrop-blur-sm">
-                <h3 className="text-lg font-semibold">목차</h3>
-                <PostDetailToc toc={toc} />
-              </div>
-            </div>
+            <DesktopToc toc={toc} />
           </aside>
         )}
       </div>
