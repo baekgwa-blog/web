@@ -43,9 +43,9 @@ export default function Header() {
   return (
     <header
       className={cn(
-        'sticky top-0 z-50 w-full border-b transition-all',
+        'sticky top-0 z-50 w-full rounded-2xl border-b transition-all',
         scrolled
-          ? 'border-border bg-background/20 shadow-sm backdrop-blur-sm'
+          ? 'border-border bg-background/60 shadow-md backdrop-blur-sm'
           : 'border-transparent'
       )}
     >
