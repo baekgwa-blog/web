@@ -36,7 +36,7 @@ export default function TiptapViewer({ content, className = '' }: TiptapViewerPr
   return (
     <div className={`${className}`}>
       <EditorContent
-        className="prose prose-neutral prose-sm dark:prose-invert prose-headings:scroll-mt-[var(--header-height)] max-w-none"
+        className="prose prose-neutral prose-sm dark:prose-invert max-w-none"
         editor={editor}
       />
     </div>
