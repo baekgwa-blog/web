@@ -11,7 +11,10 @@ import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import TagSelector from './TagSelector';
 import CategorySelector from './CategorySelector';
-const TiptapEditor = dynamic(() => import('../editor/TiptapEditor'), {
+import { toast } from 'sonner'; // 1. toast 임포트
+import { cn } from '@/lib/utils'; // 1. cn 유틸리티 임포트
+
+const TiptapEditor = dynamic(() => import('@/components/editor/TiptapEditor'), {
   ssr: false,
 });
 
@@ -22,7 +25,7 @@ export default function WritePostForm() {
   const [description, setDescription] = useState('');
   const [selectedTags, setSelectedTags] = useState<TagItem[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
-  const [editorContent] = useState('');
+  const [editorContent, setEditorContent] = useState('');
 
   const [state, formAction, isPending] = useActionState(createPostAction, {
     message: '',
@@ -44,41 +47,68 @@ export default function WritePostForm() {
     }
   }, [state, router, queryClient]);
 
+  useEffect(() => {
+    const titleError = state.errors?.title?.[0];
+    if (titleError) {
+      toast.error(titleError, { id: 'title-error', duration: 3000 });
+    } else {
+      toast.dismiss('title-error');
+    }
+  }, [state.errors?.title]);
+
+  useEffect(() => {
+    const descriptionError = state.errors?.description?.[0];
+    if (descriptionError) {
+      toast.error(descriptionError, { id: 'description-error', duration: 3000 });
+    } else {
+      toast.dismiss('description-error');
+    }
+  }, [state.errors?.description]);
+
   return (
-    <form action={formAction}>
-      <div className="flex flex-col gap-3">
-        <Input
-          type="text"
-          name="title"
-          id="title"
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="제목을 입력하세요"
-          className="font-title h-16 border-none !text-3xl font-bold shadow-none focus:border-none focus:ring-0"
-          aria-label="제목 입력"
-          autoFocus
-          value={title}
-        />
-        {state?.errors?.title && <p className="text-sm text-red-500">{state.errors.title[0]}</p>}
-        <Input
-          type="text"
-          name="description"
-          id="description"
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="설명을 입력하세요"
-          className="font-title h-10 border-none !text-xl font-bold shadow-none focus:border-none focus:ring-0"
-          aria-label="설명 입력"
-          value={description}
-          autoFocus
-        />
-        {state?.errors?.description && (
-          <p className="text-sm text-red-500">{state.errors.description[0]}</p>
+    <form action={formAction} className="flex flex-1 flex-col gap-3">
+      <Input
+        type="text"
+        name="title"
+        id="title"
+        onChange={(e) => setTitle(e.target.value)}
+        placeholder="제목을 입력하세요"
+        // 3. 에러 시 스타일 변경을 위해 className 수정
+        className={cn(
+          'font-title h-16 rounded-md border-none !text-3xl font-bold shadow-none focus:border-none focus:ring-0',
+          state.errors?.title && 'ring-destructive ring-2'
         )}
-        <div className="grid grid-cols-[300px_1fr] items-start gap-4">
+        aria-label="제목 입력"
+        autoFocus
+        value={title}
+      />
+      {/* 4. 기존 에러 메시지 p 태그 제거 */}
+
+      <Input
+        type="text"
+        name="description"
+        id="description"
+        onChange={(e) => setDescription(e.target.value)}
+        placeholder="설명을 입력하세요"
+        // 3. 에러 시 스타일 변경을 위해 className 수정
+        className={cn(
+          'font-title h-10 rounded-md border-none !text-xl font-bold shadow-none focus:border-none focus:ring-0',
+          state.errors?.description && 'ring-destructive ring-2'
+        )}
+        aria-label="설명 입력"
+        value={description}
+      />
+      {/* 4. 기존 에러 메시지 p 태그 제거 */}
+
+      <div className="grid h-10 grid-cols-[300px_1fr] items-stretch gap-4">
+        <div className="h-full">
           <CategorySelector
             value={selectedCategory}
             onValueChange={setSelectedCategory}
             error={state?.errors?.categoryId?.[0]}
           />
+        </div>
+        <div className="h-full">
           <TagSelector
             selectedTags={selectedTags}
             onTagToggle={(tag) => {
@@ -91,13 +121,13 @@ export default function WritePostForm() {
             error={state?.errors?.tagIdList?.[0]}
           />
         </div>
-        <TiptapEditor content={editorContent} />
-        <div className="mt-6 flex justify-end gap-2">
-          <Button type="submit" disabled={isPending}>
-            {isPending && <Loader2 className="mr-2 hidden h-4 w-4 animate-spin" />}
-            발행하기
-          </Button>
-        </div>
+      </div>
+      <TiptapEditor />
+      <div className="mt-6 flex justify-end gap-2">
+        <Button type="submit" disabled={isPending}>
+          {isPending && <Loader2 className="mr-2 hidden h-4 w-4 animate-spin" />}
+          발행하기
+        </Button>
       </div>
       {/* 폼 제출을 위한 hidden input들 */}
       <input type="hidden" name="content" value={editorContent} />

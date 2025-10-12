@@ -14,6 +14,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { toast } from 'sonner'; // 1. sonner toast 임포트
 
 interface TagSelectorProps {
   selectedTags: TagItem[];
@@ -32,6 +33,15 @@ export default function TagSelector({ selectedTags, onTagToggle, error }: TagSel
     getTagList({ keyword: tagSearch }).then(setTagOptions);
   }, [tagSearch]);
 
+  // 2. error prop을 감지하는 useEffect 추가
+  useEffect(() => {
+    if (error) {
+      toast.error(error, { id: 'tag-error', duration: 3000 });
+    } else {
+      toast.dismiss('tag-error');
+    }
+  }, [error]);
+
   const isTagSelected = useCallback(
     (tag: TagItem) => selectedTags.some((t) => t.id === tag.id),
     [selectedTags]
@@ -48,26 +58,28 @@ export default function TagSelector({ selectedTags, onTagToggle, error }: TagSel
   }, []);
 
   return (
-    <div className="relative w-full">
+    <div className="relative h-full w-full">
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
             role="combobox"
             aria-expanded={open}
+            aria-invalid={!!error} // 3. aria-invalid 속성 추가
             className={cn(
-              'h-auto min-h-[40px] w-full flex-wrap justify-between',
-              selectedTags.length > 0 ? 'py-2' : ''
+              'flex h-full !min-h-0 w-full items-center justify-between py-0',
+              selectedTags.length > 0 ? 'py-2' : '',
+              // 4. 에러 발생 시 테두리 색상 변경 클래스 추가
+              error && 'border-destructive focus:border-destructive focus:ring-destructive/50'
             )}
           >
             {selectedTags.length > 0 ? (
-              <div className="flex flex-wrap gap-1">
+              <div className="flex flex-wrap items-center gap-1 overflow-hidden">
                 {selectedTags.map((tag) => (
                   <Badge
                     key={tag.id}
-                    // variant="secondary" // 기존 variant 제거
-                    style={getTagRandomColorStyle(tag.id)} // 👇 여기에 동적으로 스타일 적용
-                    className="flex items-center gap-1 border-transparent" // border-transparent 추가
+                    style={getTagRandomColorStyle(tag.id)}
+                    className="flex items-center gap-1 border-transparent"
                   >
                     {tag.name}
                     <X
@@ -91,7 +103,7 @@ export default function TagSelector({ selectedTags, onTagToggle, error }: TagSel
             <CommandInput
               placeholder="태그 검색..."
               value={tagSearch}
-              onValueChange={setTagSearch}
+              onValue-change={setTagSearch}
             />
             <CommandList className="max-h-[200px] overflow-y-auto">
               <CommandEmpty>검색 결과가 없습니다.</CommandEmpty>
@@ -120,7 +132,6 @@ export default function TagSelector({ selectedTags, onTagToggle, error }: TagSel
           </Command>
         </PopoverContent>
       </Popover>
-      {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
     </div>
   );
 }
