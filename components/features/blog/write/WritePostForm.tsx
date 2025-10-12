@@ -3,21 +3,14 @@
 import dynamic from 'next/dynamic';
 import { useEffect, useActionState, useState } from 'react';
 import { Input } from '@/components/ui/input';
-import { getCategories, CategoryList } from '@/lib/api/category';
 import { TagItem } from '@/lib/api/tag';
 import { createPostAction } from '@/lib/actions/post';
 import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from '@/components/ui/select';
 import TagSelector from './TagSelector';
+import CategorySelector from './CategorySelector';
 const TiptapEditor = dynamic(() => import('../editor/TiptapEditor'), {
   ssr: false,
 });
@@ -28,7 +21,6 @@ export default function WritePostForm() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [selectedTags, setSelectedTags] = useState<TagItem[]>([]);
-  const [categoryOptions, setCategoryOptions] = useState<CategoryList[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [editorContent] = useState('');
 
@@ -52,13 +44,9 @@ export default function WritePostForm() {
     }
   }, [state, router, queryClient]);
 
-  useEffect(() => {
-    getCategories().then(setCategoryOptions);
-  }, []);
-
   return (
     <form action={formAction}>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-3">
         <Input
           type="text"
           name="title"
@@ -85,32 +73,24 @@ export default function WritePostForm() {
         {state?.errors?.description && (
           <p className="text-sm text-red-500">{state.errors.description[0]}</p>
         )}
-        <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-          <SelectTrigger className="w-[200px]">
-            <SelectValue placeholder="카테고리를 선택하세요" />
-          </SelectTrigger>
-          <SelectContent>
-            {categoryOptions.map((cat) => (
-              <SelectItem key={cat.id} value={cat.id.toString()}>
-                {cat.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        {state?.errors?.categoryId && (
-          <p className="text-sm text-red-500">{state.errors.categoryId[0]}</p>
-        )}
-        <TagSelector
-          selectedTags={selectedTags}
-          onTagToggle={(tag) => {
-            setSelectedTags((prev) =>
-              prev.some((t) => t.id === tag.id)
-                ? prev.filter((t) => t.id !== tag.id)
-                : [...prev, tag]
-            );
-          }}
-          error={state?.errors?.tagIdList?.[0]}
-        />
+        <div className="grid grid-cols-[300px_1fr] items-start gap-4">
+          <CategorySelector
+            value={selectedCategory}
+            onValueChange={setSelectedCategory}
+            error={state?.errors?.categoryId?.[0]}
+          />
+          <TagSelector
+            selectedTags={selectedTags}
+            onTagToggle={(tag) => {
+              setSelectedTags((prev) =>
+                prev.some((t) => t.id === tag.id)
+                  ? prev.filter((t) => t.id !== tag.id)
+                  : [...prev, tag]
+              );
+            }}
+            error={state?.errors?.tagIdList?.[0]}
+          />
+        </div>
         <TiptapEditor content={editorContent} />
         <div className="mt-6 flex justify-end gap-2">
           <Button type="submit" disabled={isPending}>

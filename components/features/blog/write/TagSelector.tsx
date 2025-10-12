@@ -21,7 +21,6 @@ interface TagSelectorProps {
   error?: string;
 }
 
-// 총 몇 개의 랜덤 색상 변수를 정의했는지 여기에 맞춰줍니다.
 const NUM_RANDOM_COLORS = 7;
 
 export default function TagSelector({ selectedTags, onTagToggle, error }: TagSelectorProps) {
@@ -38,14 +37,13 @@ export default function TagSelector({ selectedTags, onTagToggle, error }: TagSel
     [selectedTags]
   );
 
-  // 태그 ID를 기반으로 일관된 랜덤 색상을 반환하는 함수
   const getTagRandomColorStyle = useCallback((tagId: number) => {
-    const colorIndex = (tagId % NUM_RANDOM_COLORS) + 1; // 1부터 NUM_RANDOM_COLORS까지
+    const colorIndex = (tagId % NUM_RANDOM_COLORS) + 1;
     const backgroundColorVar = `var(--badge-random-${colorIndex})`;
 
     return {
       backgroundColor: backgroundColorVar,
-      color: 'hsl(var(--primary-foreground))', // 글자색은 테마의 primary-foreground 사용
+      color: 'hsl(var(--primary-foreground))',
     };
   }, []);
 
