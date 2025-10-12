@@ -59,7 +59,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
         {/* PC화면 목차 */}
         {toc.length > 0 && (
           <aside className="relative hidden md:block">
-            <div className="sticky top-[var(--header-height)]">
+            <div className="sticky top-[var(--sticky-top)]">
               <div className="bg-muted/60 space-y-4 rounded-lg p-6 backdrop-blur-sm">
                 <h3 className="text-lg font-semibold">목차</h3>
                 <PostDetailToc toc={toc} />
