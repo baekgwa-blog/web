@@ -50,18 +50,15 @@ export default function TiptapEditor({
         return false;
       },
       handleKeyDown: (view, event) => {
-        // Tab 키로 들여쓰기 (StarterKit 기본 기능 사용)
         if (event.key === 'Tab') {
           event.preventDefault();
           if (event.shiftKey) {
-            // Shift+Tab: 리스트에서 나가기 또는 들여쓰기 감소
             if (editor?.isActive('bulletList') || editor?.isActive('orderedList')) {
               editor?.chain().focus().liftListItem('listItem').run();
             } else {
               editor?.chain().focus().liftListItem('listItem').run();
             }
           } else {
-            // Tab: 리스트 들여쓰기 또는 새 리스트 항목 생성
             if (editor?.isActive('bulletList') || editor?.isActive('orderedList')) {
               editor?.chain().focus().sinkListItem('listItem').run();
             } else {
