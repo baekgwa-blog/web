@@ -103,7 +103,7 @@ export default function TagSelector({ selectedTags, onTagToggle, error }: TagSel
             <CommandInput
               placeholder="태그 검색..."
               value={tagSearch}
-              onValue-change={setTagSearch}
+              onValueChange={setTagSearch}
             />
             <CommandList className="max-h-[200px] overflow-y-auto">
               <CommandEmpty>검색 결과가 없습니다.</CommandEmpty>

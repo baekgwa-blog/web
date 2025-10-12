@@ -42,8 +42,8 @@ export default function TiptapToolbar({ editor, onImageUpload }: Props) {
     try {
       const url = await onImageUpload(file);
       editor.chain().focus().setImage({ src: url }).run();
-    } catch (error) {
-      console.error(error);
+    } catch {
+      // 이미지 업로드 실패 처리
     }
 
     if (event.target) event.target.value = '';
@@ -56,6 +56,7 @@ export default function TiptapToolbar({ editor, onImageUpload }: Props) {
         {/* 텍스트 스타일 */}
         <div className="flex items-center gap-1">
           <Button
+            type="button"
             variant={editor.isActive('bold') ? 'default' : 'ghost'}
             size="sm"
             onClick={() => editor.chain().focus().toggleBold().run()}
@@ -64,6 +65,7 @@ export default function TiptapToolbar({ editor, onImageUpload }: Props) {
             <Bold className="h-4 w-4" />
           </Button>
           <Button
+            type="button"
             variant={editor.isActive('italic') ? 'default' : 'ghost'}
             size="sm"
             onClick={() => editor.chain().focus().toggleItalic().run()}
@@ -72,6 +74,7 @@ export default function TiptapToolbar({ editor, onImageUpload }: Props) {
             <Italic className="h-4 w-4" />
           </Button>
           <Button
+            type="button"
             variant={editor.isActive('strike') ? 'default' : 'ghost'}
             size="sm"
             onClick={() => editor.chain().focus().toggleStrike().run()}
@@ -80,6 +83,7 @@ export default function TiptapToolbar({ editor, onImageUpload }: Props) {
             <Strikethrough className="h-4 w-4" />
           </Button>
           <Button
+            type="button"
             variant={editor.isActive('code') ? 'default' : 'ghost'}
             size="sm"
             onClick={() => editor.chain().focus().toggleCode().run()}
@@ -94,6 +98,7 @@ export default function TiptapToolbar({ editor, onImageUpload }: Props) {
         {/* 헤딩 */}
         <div className="flex items-center gap-1">
           <Button
+            type="button"
             variant={editor.isActive('heading', { level: 1 }) ? 'default' : 'ghost'}
             size="sm"
             onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
@@ -102,6 +107,7 @@ export default function TiptapToolbar({ editor, onImageUpload }: Props) {
             <Heading1 className="h-4 w-4" />
           </Button>
           <Button
+            type="button"
             variant={editor.isActive('heading', { level: 2 }) ? 'default' : 'ghost'}
             size="sm"
             onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
@@ -110,6 +116,7 @@ export default function TiptapToolbar({ editor, onImageUpload }: Props) {
             <Heading2 className="h-4 w-4" />
           </Button>
           <Button
+            type="button"
             variant={editor.isActive('heading', { level: 3 }) ? 'default' : 'ghost'}
             size="sm"
             onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
@@ -124,6 +131,7 @@ export default function TiptapToolbar({ editor, onImageUpload }: Props) {
         {/* 리스트 */}
         <div className="flex items-center gap-1">
           <Button
+            type="button"
             variant={editor.isActive('bulletList') ? 'default' : 'ghost'}
             size="sm"
             onClick={() => editor.chain().focus().toggleBulletList().run()}
@@ -132,6 +140,7 @@ export default function TiptapToolbar({ editor, onImageUpload }: Props) {
             <List className="h-4 w-4" />
           </Button>
           <Button
+            type="button"
             variant={editor.isActive('orderedList') ? 'default' : 'ghost'}
             size="sm"
             onClick={() => editor.chain().focus().toggleOrderedList().run()}
@@ -140,6 +149,7 @@ export default function TiptapToolbar({ editor, onImageUpload }: Props) {
             <ListOrdered className="h-4 w-4" />
           </Button>
           <Button
+            type="button"
             variant={editor.isActive('taskList') ? 'default' : 'ghost'}
             size="sm"
             onClick={() => editor.chain().focus().toggleTaskList().run()}
@@ -154,6 +164,7 @@ export default function TiptapToolbar({ editor, onImageUpload }: Props) {
         {/* 블록 요소 */}
         <div className="flex items-center gap-1">
           <Button
+            type="button"
             variant={editor.isActive('blockquote') ? 'default' : 'ghost'}
             size="sm"
             onClick={() => editor.chain().focus().toggleBlockquote().run()}
@@ -162,6 +173,7 @@ export default function TiptapToolbar({ editor, onImageUpload }: Props) {
             <Quote className="h-4 w-4" />
           </Button>
           <Button
+            type="button"
             variant={editor.isActive('codeBlock') ? 'default' : 'ghost'}
             size="sm"
             onClick={() => editor.chain().focus().toggleCodeBlock().run()}
@@ -170,6 +182,7 @@ export default function TiptapToolbar({ editor, onImageUpload }: Props) {
             <Code className="h-4 w-4" />
           </Button>
           <Button
+            type="button"
             variant={editor.isActive('horizontalRule') ? 'default' : 'ghost'}
             size="sm"
             onClick={() => editor.chain().focus().setHorizontalRule().run()}
@@ -184,6 +197,7 @@ export default function TiptapToolbar({ editor, onImageUpload }: Props) {
         {/* 미디어 및 링크 */}
         <div className="flex items-center gap-1">
           <Button
+            type="button"
             variant="ghost"
             size="sm"
             onClick={() => fileInputRef.current?.click()}
@@ -205,9 +219,10 @@ export default function TiptapToolbar({ editor, onImageUpload }: Props) {
         {/* 하이라이트 */}
         <div className="flex items-center gap-1">
           <Button
+            type="button"
             variant={editor.isActive('highlight') ? 'default' : 'ghost'}
             size="sm"
-            // onClick={() => editor.chain().focus().toggleHighlight().run()}
+            onClick={() => editor.chain().focus().toggleHighlight().run()}
             className="h-8 w-8 p-0"
           >
             <Highlighter className="h-4 w-4" />
@@ -219,33 +234,37 @@ export default function TiptapToolbar({ editor, onImageUpload }: Props) {
         {/* 정렬 */}
         <div className="flex items-center gap-1">
           <Button
+            type="button"
             variant={editor.isActive({ textAlign: 'left' }) ? 'default' : 'ghost'}
             size="sm"
-            // onClick={() => handleAlign('left')}
+            onClick={() => editor.chain().focus().setTextAlign('left').run()}
             className="h-8 w-8 p-0"
           >
             <AlignLeft className="h-4 w-4" />
           </Button>
           <Button
+            type="button"
             variant={editor.isActive({ textAlign: 'center' }) ? 'default' : 'ghost'}
             size="sm"
-            // onClick={() => handleAlign('center')}
+            onClick={() => editor.chain().focus().setTextAlign('center').run()}
             className="h-8 w-8 p-0"
           >
             <AlignCenter className="h-4 w-4" />
           </Button>
           <Button
+            type="button"
             variant={editor.isActive({ textAlign: 'right' }) ? 'default' : 'ghost'}
             size="sm"
-            // onClick={() => handleAlign('right')}
+            onClick={() => editor.chain().focus().setTextAlign('right').run()}
             className="h-8 w-8 p-0"
           >
             <AlignRight className="h-4 w-4" />
           </Button>
           <Button
+            type="button"
             variant={editor.isActive({ textAlign: 'justify' }) ? 'default' : 'ghost'}
             size="sm"
-            // onClick={() => handleAlign('justify')}
+            onClick={() => editor.chain().focus().setTextAlign('justify').run()}
             className="h-8 w-8 p-0"
           >
             <AlignJustify className="h-4 w-4" />
@@ -257,6 +276,7 @@ export default function TiptapToolbar({ editor, onImageUpload }: Props) {
         {/* 실행 취소/다시 실행 */}
         <div className="flex items-center gap-1">
           <Button
+            type="button"
             variant="ghost"
             size="sm"
             onClick={() => editor.chain().focus().undo().run()}
@@ -266,6 +286,7 @@ export default function TiptapToolbar({ editor, onImageUpload }: Props) {
             <Undo className="h-4 w-4" />
           </Button>
           <Button
+            type="button"
             variant="ghost"
             size="sm"
             onClick={() => editor.chain().focus().redo().run()}

@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { useEditor, EditorContent, Editor } from '@tiptap/react';
 
 import './styles.scss';
@@ -11,6 +10,9 @@ import { Markdown } from 'tiptap-markdown';
 import Link from '@tiptap/extension-link';
 import Image from '@tiptap/extension-image';
 import Highlight from '@tiptap/extension-highlight';
+import TextAlign from '@tiptap/extension-text-align';
+import TaskList from '@tiptap/extension-task-list';
+import TaskItem from '@tiptap/extension-task-item';
 import { Indent } from './indent';
 
 interface TiptapEditorProps {
@@ -28,8 +30,8 @@ export default function TiptapEditor({
     try {
       const url = await onImageUpload(file);
       editor.chain().focus().setImage({ src: url }).run();
-    } catch (error) {
-      console.error(error);
+    } catch {
+      // 이미지 업로드 실패 처리
     }
   };
 
@@ -71,7 +73,27 @@ export default function TiptapEditor({
       CustomCodeBlockLowlight,
       Image,
       Indent,
-      Highlight,
+      Highlight.configure({
+        HTMLAttributes: {
+          class: 'highlight-yellow',
+        },
+      }),
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
+        alignments: ['left', 'center', 'right', 'justify'],
+        defaultAlignment: 'left',
+      }),
+      TaskList.configure({
+        HTMLAttributes: {
+          class: 'not-prose',
+        },
+      }),
+      TaskItem.configure({
+        HTMLAttributes: {
+          class: 'flex items-start gap-2',
+        },
+        nested: true,
+      }),
     ],
     content: content,
     onUpdate({ editor }) {
