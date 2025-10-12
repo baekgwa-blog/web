@@ -1,7 +1,6 @@
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import { lowlight } from 'lowlight';
 
-// 해당 부분에서 필요한 언어를 import 하여 lowlight에 적용할 수 있습니다.
 import html from 'highlight.js/lib/languages/xml';
 import css from 'highlight.js/lib/languages/css';
 import js from 'highlight.js/lib/languages/javascript';
@@ -36,16 +35,13 @@ const CustomCodeBlockLowlight = CodeBlockLowlight.extend({
         const { from, to } = selection;
         const { $from } = selection;
 
-        // 현재 선택 영역의 노드 가져오기
         const nodeAtSelection = $from.node();
 
         if (nodeAtSelection && nodeAtSelection.type.name === 'codeBlock') {
           let tr;
-          // 텍스트가 드래그되었는지 확인
           const isTextSelected = selection.from < selection.to;
 
           if (isTextSelected) {
-            // select 된 텍스트 맨 앞을 기준으로 tab을 함
             tr = state.tr.insertText('  ', from);
           } else {
             tr = state.tr.insertText('  ', from, to);

@@ -13,7 +13,6 @@ import Highlight from '@tiptap/extension-highlight';
 import TextAlign from '@tiptap/extension-text-align';
 import TaskList from '@tiptap/extension-task-list';
 import TaskItem from '@tiptap/extension-task-item';
-import { Indent } from './indent';
 
 interface TiptapEditorProps {
   content: string;
@@ -58,11 +57,42 @@ export default function TiptapEditor({
         }
         return false;
       },
+      handleKeyDown: (view, event) => {
+        // Tab 키로 들여쓰기 (StarterKit 기본 기능 사용)
+        if (event.key === 'Tab') {
+          event.preventDefault();
+          if (event.shiftKey) {
+            // Shift+Tab: 리스트에서 나가기 또는 들여쓰기 감소
+            if (editor?.isActive('bulletList') || editor?.isActive('orderedList')) {
+              editor?.chain().focus().liftListItem('listItem').run();
+            } else {
+              editor?.chain().focus().liftListItem('listItem').run();
+            }
+          } else {
+            // Tab: 리스트 들여쓰기 또는 새 리스트 항목 생성
+            if (editor?.isActive('bulletList') || editor?.isActive('orderedList')) {
+              editor?.chain().focus().sinkListItem('listItem').run();
+            } else {
+              editor?.chain().focus().sinkListItem('listItem').run();
+            }
+          }
+          return true;
+        }
+        return false;
+      },
     },
     extensions: [
       StarterKit.configure({
         heading: {
           levels: [1, 2, 3],
+        },
+        bulletList: {
+          keepMarks: true,
+          keepAttributes: false,
+        },
+        orderedList: {
+          keepMarks: true,
+          keepAttributes: false,
         },
       }),
 
@@ -72,7 +102,6 @@ export default function TiptapEditor({
       Markdown,
       CustomCodeBlockLowlight,
       Image,
-      Indent,
       Highlight.configure({
         HTMLAttributes: {
           class: 'highlight-yellow',

@@ -16,10 +16,12 @@ import {
   Heading3,
   Highlighter,
   ImageIcon,
+  Indent,
   Italic,
   List,
   ListOrdered,
   Minus,
+  Outdent,
   Quote,
   Redo,
   Strikethrough,
@@ -268,6 +270,32 @@ export default function TiptapToolbar({ editor, onImageUpload }: Props) {
             className="h-8 w-8 p-0"
           >
             <AlignJustify className="h-4 w-4" />
+          </Button>
+        </div>
+
+        <Separator orientation="vertical" className="h-6" />
+
+        {/* 들여쓰기/내어쓰기 */}
+        <div className="flex items-center gap-1">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => editor.chain().focus().liftListItem('listItem').run()}
+            disabled={!editor.can().liftListItem('listItem')}
+            className="h-8 w-8 p-0"
+          >
+            <Outdent className="h-4 w-4" />
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => editor.chain().focus().sinkListItem('listItem').run()}
+            disabled={!editor.can().sinkListItem('listItem')}
+            className="h-8 w-8 p-0"
+          >
+            <Indent className="h-4 w-4" />
           </Button>
         </div>
 
