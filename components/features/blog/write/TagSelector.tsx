@@ -14,7 +14,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { toast } from 'sonner'; // 1. sonner toast 임포트
+import { toast } from 'sonner';
+import { useDebounce } from '@/lib/hooks/use-debounce';
 
 interface TagSelectorProps {
   selectedTags: TagItem[];
@@ -29,11 +30,12 @@ export default function TagSelector({ selectedTags, onTagToggle, error }: TagSel
   const [tagSearch, setTagSearch] = useState('');
   const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    getTagList({ keyword: tagSearch }).then(setTagOptions);
-  }, [tagSearch]);
+  const debouncedTagSearch = useDebounce(tagSearch, 300);
 
-  // 2. error prop을 감지하는 useEffect 추가
+  useEffect(() => {
+    getTagList({ keyword: debouncedTagSearch }).then(setTagOptions);
+  }, [debouncedTagSearch]);
+
   useEffect(() => {
     if (error) {
       toast.error(error, { id: 'tag-error', duration: 3000 });
@@ -65,11 +67,10 @@ export default function TagSelector({ selectedTags, onTagToggle, error }: TagSel
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            aria-invalid={!!error} // 3. aria-invalid 속성 추가
+            aria-invalid={!!error}
             className={cn(
               'flex h-full !min-h-0 w-full items-center justify-between py-0',
               selectedTags.length > 0 ? 'py-2' : '',
-              // 4. 에러 발생 시 테두리 색상 변경 클래스 추가
               error && 'border-destructive focus:border-destructive focus:ring-destructive/50'
             )}
           >
@@ -99,12 +100,8 @@ export default function TagSelector({ selectedTags, onTagToggle, error }: TagSel
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-full p-0" align="start">
-          <Command>
-            <CommandInput
-              placeholder="태그 검색..."
-              value={tagSearch}
-              onValueChange={setTagSearch}
-            />
+          <Command shouldFilter={false}>
+            <CommandInput placeholder="태그 검색" value={tagSearch} onValueChange={setTagSearch} />
             <CommandList className="max-h-[200px] overflow-y-auto">
               <CommandEmpty>검색 결과가 없습니다.</CommandEmpty>
               {tagOptions.map((tag) => (
