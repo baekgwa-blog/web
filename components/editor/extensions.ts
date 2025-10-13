@@ -23,6 +23,8 @@ export const getTiptapExtensions = ({ isView = false }: { isView?: boolean } = {
   const baseExtensions = [
     StarterKit.configure({
       heading: false,
+      codeBlock: false,
+      link: false,
       bulletList: {
         keepMarks: true,
         keepAttributes: false,
@@ -43,6 +45,12 @@ export const getTiptapExtensions = ({ isView = false }: { isView?: boolean } = {
     }),
     Link.extend({ inclusive: false }).configure({
       openOnClick: false,
+      autolink: true,
+      linkOnPaste: true,
+      HTMLAttributes: {
+        target: '_blank',
+        rel: 'noopener noreferrer',
+      },
     }),
     CustomCodeBlockLowlight,
     Image,

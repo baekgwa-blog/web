@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { Editor } from '@tiptap/react';
 import { Button } from '@/components/ui/button';
 import {
@@ -18,6 +18,7 @@ import {
   ImageIcon,
   Indent,
   Italic,
+  LinkIcon,
   List,
   ListOrdered,
   Minus,
@@ -50,6 +51,22 @@ export default function TiptapToolbar({ editor, onImageUpload }: Props) {
 
     if (event.target) event.target.value = '';
   };
+
+  const handleLink = useCallback(() => {
+    const previousUrl = editor.getAttributes('link').href;
+
+    if (previousUrl) {
+      editor.chain().focus().extendMarkRange('link').unsetLink().run();
+      return;
+    }
+
+    const url = window.prompt('URL을 입력하세요', previousUrl);
+    if (url === null || url === '') {
+      return;
+    }
+
+    editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
+  }, [editor]);
 
   return (
     <div className="border-border overflow-hidden rounded-t-lg border">
@@ -198,6 +215,15 @@ export default function TiptapToolbar({ editor, onImageUpload }: Props) {
 
         {/* 미디어 및 링크 */}
         <div className="flex items-center gap-1">
+          <Button
+            type="button"
+            variant={editor.isActive('link') ? 'default' : 'ghost'}
+            size="sm"
+            onClick={handleLink}
+            className="h-8 w-8 p-0"
+          >
+            <LinkIcon className="h-4 w-4" />
+          </Button>
           <Button
             type="button"
             variant="ghost"

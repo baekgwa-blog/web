@@ -7,6 +7,19 @@
     margin-top: 0.75em;
   }
 
+  a {
+    color: #3b82f6;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+    cursor: pointer;
+    transition: color 0.2s ease-in-out;
+  }
+
+  a:hover {
+    color: #1d4ed8;
+  }
+
   img {
     max-width: 500px;
     max-height: 500px;
@@ -312,4 +325,12 @@ ul[data-type='taskList'] li[data-checked='true'] > div p {
   text-decoration: line-through;
   opacity: 0.6;
   color: hsl(var(--muted-foreground));
+}
+
+.dark .ProseMirror a {
+  color: #60a5fa;
+}
+
+.dark .ProseMirror a:hover {
+  color: #93c5fd;
 }
