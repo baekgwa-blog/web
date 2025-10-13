@@ -27,6 +27,7 @@ import {
   Redo,
   Strikethrough,
   Undo,
+  Youtube,
 } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 
@@ -66,6 +67,15 @@ export default function TiptapToolbar({ editor, onImageUpload }: Props) {
     }
 
     editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
+  }, [editor]);
+
+  const handleYoutube = useCallback(() => {
+    const url = window.prompt('유튜브 URL을 입력하세요');
+    if (url) {
+      editor.commands.setYoutubeVideo({
+        src: url,
+      });
+    }
   }, [editor]);
 
   return (
@@ -240,6 +250,16 @@ export default function TiptapToolbar({ editor, onImageUpload }: Props) {
             style={{ display: 'none' }}
             accept="image/*"
           />
+
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={handleYoutube}
+            className="h-8 w-8 p-0"
+          >
+            <Youtube className="h-4 w-4" />
+          </Button>
         </div>
 
         <Separator orientation="vertical" className="h-6" />

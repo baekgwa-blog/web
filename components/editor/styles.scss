@@ -157,8 +157,8 @@
   }
 
   blockquote {
-    padding-left: 1rem;
-    border-left: 2px solid rgba(#0d0d0d, 0.1);
+    padding: 0.75rem 1rem;
+    border-left: 4px solid rgba(#0d0d0d, 0.1);
   }
 
   hr {
@@ -333,4 +333,11 @@ ul[data-type='taskList'] li[data-checked='true'] > div p {
 
 .dark .ProseMirror a:hover {
   color: #93c5fd;
+}
+
+.dark .ProseMirror blockquote {
+  border-left-color: rgba(255, 255, 255, 0.3);
+  background-color: #1e1e1e;
+  padding: 0.75rem 1rem;
+  border-radius: 0.25rem;
 }

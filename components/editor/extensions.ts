@@ -7,6 +7,7 @@ import TextAlign from '@tiptap/extension-text-align';
 import TaskList from '@tiptap/extension-task-list';
 import TaskItem from '@tiptap/extension-task-item';
 import Heading from '@tiptap/extension-heading';
+import Youtube from '@tiptap/extension-youtube';
 import CustomCodeBlockLowlight from './codeBlockIndent';
 
 const slugify = (text: string) => {
@@ -74,6 +75,13 @@ export const getTiptapExtensions = ({ isView = false }: { isView?: boolean } = {
         class: 'flex items-start gap-2',
       },
       nested: true,
+    }),
+    Youtube.configure({
+      width: 640,
+      height: 480,
+      controls: true,
+      modestBranding: true,
+      rel: 0,
     }),
   ];
 
