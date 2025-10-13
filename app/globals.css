@@ -1,6 +1,32 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
-@plugin "@tailwindcss/typography";
+
+/* 제목용 */
+@font-face {
+  font-family: 'Aggravo';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SBAggroM.woff')
+    format('woff');
+  font-weight: 500;
+  font-display: swap;
+}
+
+/* 기본 폰트 */
+@font-face {
+  font-family: 'Paperozi';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-3Light.woff2')
+    format('woff2');
+  font-weight: 300;
+  font-display: swap;
+}
+
+/* 코드 폰트 */
+@font-face {
+  font-family: 'D2Coding';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_three@1.0/D2Coding.woff')
+    format('woff');
+  font-weight: normal;
+  font-display: swap;
+}
 
 @custom-variant dark (&:is(.dark *));
 
@@ -42,6 +68,10 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  --font-title: 'Aggravo', var(--font-geist-sans), sans-serif;
+  --font-body: 'Paperozi', var(--font-geist-sans), sans-serif;
+  --font-code: 'D2Coding', var(--font-geist-sans), sans-serif;
 }
 
 :root {
@@ -80,8 +110,21 @@
 
   /** position var **/
   --header-height: 3.5rem;
-  --sticky-offset: 1.5rem;
+  --sticky-offset: 1rem;
   --sticky-top: calc(var(--header-height) + var(--sticky-offset));
+
+  /* 코드 블럭용 색상 */
+  --code-block-background: hsla(0, 0%, 66%, 0.251);
+  --code-block-base-color: var(--foreground);
+  --code-block-select-color: var(--border);
+
+  --badge-random-1: hsla(200, 80%, 60%, 0.2); /* 파란색 계열 */
+  --badge-random-2: rgba(235, 153, 71, 0.2); /* 주황색 계열 */
+  --badge-random-3: rgba(20, 184, 20, 0.2); /* 초록색 계열 */
+  --badge-random-4: rgba(153, 71, 235, 0.2); /* 보라색 계열 */
+  --badge-random-5: rgba(235, 71, 71, 0.2); /* 빨간색 계열 */
+  --badge-random-6: rgba(235, 235, 71, 0.2); /* 노란색 계열 */
+  --badge-random-7: rgba(71, 235, 235, 0.2); /* 청록색 계열 */
 }
 
 .dark {
@@ -116,6 +159,19 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+
+  /* 코드 블럭용 색상 */
+  --code-block-background: var(--card);
+  --code-block-base-color: hsl(247, 13%, 73%);
+  --code-block-select-color: var(--muted);
+
+  --badge-random-1: hsla(200, 59%, 70%, 0.2);
+  --badge-random-2: hsla(30, 59%, 70%, 0.2);
+  --badge-random-3: hsla(120, 60%, 50%, 0.2);
+  --badge-random-4: hsla(270, 59%, 70%, 0.2);
+  --badge-random-5: hsla(0, 59%, 70%, 0.2);
+  --badge-random-6: hsla(60, 59%, 70%, 0.2);
+  --badge-random-7: hsla(180, 59%, 70%, 0.2);
 }
 
 @layer base {
@@ -124,6 +180,13 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: 'Paperozi', var(--font-geist-sans), sans-serif;
+  }
+
+  .prose h1,
+  .prose h2,
+  .prose h3 {
+    scroll-margin-top: var(--sticky-top);
   }
 }
 

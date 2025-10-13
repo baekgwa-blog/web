@@ -1,9 +1,11 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
+import 'highlight.js/styles/stackoverflow-dark.min.css';
 import Header from '@/components/layouts/Header';
 import Footer from '@/components/layouts/Footer';
 import Providers from './providers';
+import { Toaster } from '@/components/ui/sonner';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -33,6 +35,7 @@ export default function RootLayout({
             <Header />
             <main className="flex-1">{children}</main>
             <Footer />
+            <Toaster position="bottom-center" expand={false} closeButton richColors />
           </div>
         </Providers>
       </body>

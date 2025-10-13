@@ -17,9 +17,9 @@ export default async function Home({ searchParams }: HomeProps) {
   const postsPromise = getPostList({ category: category, sort: sort, page: 0, keyword: keyword });
 
   return (
-    <div className="container py-8">
+    <div className="container py-4">
       {/* 메인페이지 헤더 섹션, 추후 검색 추가 */}
-      <div className="mb-8">
+      <div className="mb-4">
         <BlogMainHeaderSection />
       </div>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-[200px_1fr]">

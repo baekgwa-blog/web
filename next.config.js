@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
-const createMDX = require('@next/mdx');
-
 const nextConfig = {
   images: {
     remotePatterns: [
@@ -36,11 +33,7 @@ const nextConfig = {
       },
     ],
   },
-  pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'mdx', 'md'],
+  pageExtensions: ['ts', 'tsx', 'js', 'jsx'],
 };
 
-const withMDX = createMDX({
-  options: {},
-});
-
-module.exports = withMDX(nextConfig);
+module.exports = nextConfig;
