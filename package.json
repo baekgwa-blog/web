@@ -75,7 +75,6 @@
     "eslint-config-next": "15.2.5",
     "eslint-config-prettier": "^10.1.2",
     "globals": "^16.0.0",
-    "next": "^15.5.4",
     "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
     "sass": "^1.93.2",
