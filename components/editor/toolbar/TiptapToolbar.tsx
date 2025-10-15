@@ -28,8 +28,16 @@ import {
   Strikethrough,
   Undo,
   Youtube,
+  Table2,
 } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 type Props = {
   editor: Editor;
@@ -188,6 +196,73 @@ export default function TiptapToolbar({ editor, onImageUpload }: Props) {
           </Button>
         </div>
 
+        {/* 테이블 */}
+        <Separator orientation="vertical" className="h-6" />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0">
+              <Table2 className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem
+              onClick={() =>
+                editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()
+              }
+            >
+              테이블 삽입
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => editor.chain().focus().addRowAfter().run()}
+              disabled={!editor.can().addRowAfter()}
+            >
+              아래에 행 추가
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => editor.chain().focus().addColumnAfter().run()}
+              disabled={!editor.can().addColumnAfter()}
+            >
+              오른쪽에 열 추가
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => editor.chain().focus().deleteRow().run()}
+              disabled={!editor.can().deleteRow()}
+              className="text-red-500"
+            >
+              행 삭제
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => editor.chain().focus().deleteColumn().run()}
+              disabled={!editor.can().deleteColumn()}
+              className="text-red-500"
+            >
+              열 삭제
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => editor.chain().focus().mergeOrSplit().run()}
+              disabled={!editor.can().mergeOrSplit()}
+            >
+              셀 병합/분할
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => editor.chain().focus().toggleHeaderRow().run()}
+              disabled={!editor.can().toggleHeaderRow()}
+            >
+              헤더 행 전환
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => editor.chain().focus().deleteTable().run()}
+              disabled={!editor.can().deleteTable()}
+              className="text-red-500"
+            >
+              테이블 삭제
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
         <Separator orientation="vertical" className="h-6" />
 
         {/* 블록 요소 */}

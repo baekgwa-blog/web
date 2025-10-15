@@ -8,6 +8,10 @@ import TaskList from '@tiptap/extension-task-list';
 import TaskItem from '@tiptap/extension-task-item';
 import Heading from '@tiptap/extension-heading';
 import Youtube from '@tiptap/extension-youtube';
+import { Table } from '@tiptap/extension-table';
+import TableRow from '@tiptap/extension-table-row';
+import TableHeader from '@tiptap/extension-table-header';
+import TableCell from '@tiptap/extension-table-cell';
 import CustomCodeBlockLowlight from './codeBlockIndent';
 
 const slugify = (text: string) => {
@@ -83,6 +87,12 @@ export const getTiptapExtensions = ({ isView = false }: { isView?: boolean } = {
       modestBranding: true,
       rel: 0,
     }),
+    Table.configure({
+      resizable: true,
+    }),
+    TableRow,
+    TableHeader,
+    TableCell,
   ];
 
   if (!isView) {
