@@ -16,13 +16,13 @@ import {
   Heading3,
   Highlighter,
   ImageIcon,
-  Indent,
   Italic,
   LinkIcon,
   List,
   ListOrdered,
   Minus,
-  Outdent,
+  Pilcrow,
+  Plus,
   Quote,
   Redo,
   Strikethrough,
@@ -54,9 +54,7 @@ export default function TiptapToolbar({ editor, onImageUpload }: Props) {
     try {
       const url = await onImageUpload(file);
       editor.chain().focus().setImage({ src: url }).run();
-    } catch {
-      // 이미지 업로드 실패 처리
-    }
+    } catch {}
 
     if (event.target) event.target.value = '';
   };
@@ -88,9 +86,48 @@ export default function TiptapToolbar({ editor, onImageUpload }: Props) {
 
   return (
     <div className="border-border overflow-hidden rounded-t-lg border">
-      {/* 툴바 */}
-      <div className="border-border bg-muted/50 flex flex-wrap items-center gap-1 border-b p-2">
-        {/* 텍스트 스타일 */}
+      <div className="border-border bg-muted/50 flex flex-wrap items-center justify-center gap-3 border-b p-2">
+        {/* 헤딩 & 텍스트 스타일 드롭다운 */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button type="button" variant="ghost" size="sm" className="h-8 w-20">
+              <span className="mr-1">
+                {editor.isActive('heading', { level: 1 }) && <Heading1 className="h-4 w-4" />}
+                {editor.isActive('heading', { level: 2 }) && <Heading2 className="h-4 w-4" />}
+                {editor.isActive('heading', { level: 3 }) && <Heading3 className="h-4 w-4" />}
+                {editor.isActive('paragraph') && <Pilcrow className="h-4 w-4" />}
+              </span>
+              스타일
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem
+              onClick={() => editor.chain().focus().setParagraph().run()}
+              disabled={!editor.can().setParagraph()}
+            >
+              <Pilcrow className="mr-2 h-4 w-4" /> 본문
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+            >
+              <Heading1 className="mr-2 h-4 w-4" /> 제목 1
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+            >
+              <Heading2 className="mr-2 h-4 w-4" /> 제목 2
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+            >
+              <Heading3 className="mr-2 h-4 w-4" /> 제목 3
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        <Separator orientation="vertical" className="h-6" />
+
+        {/* 텍스트 포맷팅 (Bold, Italic 등) */}
         <div className="flex items-center gap-1">
           <Button
             type="button"
@@ -128,76 +165,90 @@ export default function TiptapToolbar({ editor, onImageUpload }: Props) {
           >
             <Code className="h-4 w-4" />
           </Button>
-        </div>
-
-        <Separator orientation="vertical" className="h-6" />
-
-        {/* 헤딩 */}
-        <div className="flex items-center gap-1">
           <Button
             type="button"
-            variant={editor.isActive('heading', { level: 1 }) ? 'default' : 'ghost'}
+            variant={editor.isActive('highlight') ? 'default' : 'ghost'}
             size="sm"
-            onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+            onClick={() => editor.chain().focus().toggleHighlight().run()}
             className="h-8 w-8 p-0"
           >
-            <Heading1 className="h-4 w-4" />
-          </Button>
-          <Button
-            type="button"
-            variant={editor.isActive('heading', { level: 2 }) ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-            className="h-8 w-8 p-0"
-          >
-            <Heading2 className="h-4 w-4" />
-          </Button>
-          <Button
-            type="button"
-            variant={editor.isActive('heading', { level: 3 }) ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-            className="h-8 w-8 p-0"
-          >
-            <Heading3 className="h-4 w-4" />
+            <Highlighter className="h-4 w-4" />
           </Button>
         </div>
 
         <Separator orientation="vertical" className="h-6" />
 
-        {/* 리스트 */}
-        <div className="flex items-center gap-1">
-          <Button
-            type="button"
-            variant={editor.isActive('bulletList') ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => editor.chain().focus().toggleBulletList().run()}
-            className="h-8 w-8 p-0"
-          >
-            <List className="h-4 w-4" />
-          </Button>
-          <Button
-            type="button"
-            variant={editor.isActive('orderedList') ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => editor.chain().focus().toggleOrderedList().run()}
-            className="h-8 w-8 p-0"
-          >
-            <ListOrdered className="h-4 w-4" />
-          </Button>
-          <Button
-            type="button"
-            variant={editor.isActive('taskList') ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => editor.chain().focus().toggleTaskList().run()}
-            className="h-8 w-8 p-0"
-          >
-            <CheckSquare className="h-4 w-4" />
-          </Button>
-        </div>
+        {/* 정렬 드롭다운 */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0">
+              {editor.isActive({ textAlign: 'center' }) && <AlignCenter className="h-4 w-4" />}
+              {editor.isActive({ textAlign: 'right' }) && <AlignRight className="h-4 w-4" />}
+              {editor.isActive({ textAlign: 'justify' }) && <AlignJustify className="h-4 w-4" />}
+              {!editor.isActive({ textAlign: 'center' }) &&
+                !editor.isActive({ textAlign: 'right' }) &&
+                !editor.isActive({ textAlign: 'justify' }) && <AlignLeft className="h-4 w-4" />}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem onClick={() => editor.chain().focus().setTextAlign('left').run()}>
+              <AlignLeft className="mr-2 h-4 w-4" /> 왼쪽
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => editor.chain().focus().setTextAlign('center').run()}>
+              <AlignCenter className="mr-2 h-4 w-4" /> 가운데
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => editor.chain().focus().setTextAlign('right').run()}>
+              <AlignRight className="mr-2 h-4 w-4" /> 오른쪽
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => editor.chain().focus().setTextAlign('justify').run()}>
+              <AlignJustify className="mr-2 h-4 w-4" /> 양쪽 맞춤
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
-        {/* 테이블 */}
         <Separator orientation="vertical" className="h-6" />
+
+        {/* 요소 삽입 드롭다운 */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0">
+              <Plus className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem onClick={() => editor.chain().focus().toggleBulletList().run()}>
+              <List className="mr-2 h-4 w-4" /> 글머리 기호
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => editor.chain().focus().toggleOrderedList().run()}>
+              <ListOrdered className="mr-2 h-4 w-4" /> 번호 매기기
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => editor.chain().focus().toggleTaskList().run()}>
+              <CheckSquare className="mr-2 h-4 w-4" /> 체크리스트
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => editor.chain().focus().toggleBlockquote().run()}>
+              <Quote className="mr-2 h-4 w-4" /> 인용문
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => editor.chain().focus().toggleCodeBlock().run()}>
+              <Code className="mr-2 h-4 w-4" /> 코드 블록
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => editor.chain().focus().setHorizontalRule().run()}>
+              <Minus className="mr-2 h-4 w-4" /> 구분선
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleLink}>
+              <LinkIcon className="mr-2 h-4 w-4" /> 링크
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => fileInputRef.current?.click()}>
+              <ImageIcon className="mr-2 h-4 w-4" /> 이미지
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleYoutube}>
+              <Youtube className="mr-2 h-4 w-4" /> 유튜브
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        {/* 테이블 드롭다운 */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0">
@@ -263,166 +314,10 @@ export default function TiptapToolbar({ editor, onImageUpload }: Props) {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        <Separator orientation="vertical" className="h-6" />
-
-        {/* 블록 요소 */}
-        <div className="flex items-center gap-1">
-          <Button
-            type="button"
-            variant={editor.isActive('blockquote') ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => editor.chain().focus().toggleBlockquote().run()}
-            className="h-8 w-8 p-0"
-          >
-            <Quote className="h-4 w-4" />
-          </Button>
-          <Button
-            type="button"
-            variant={editor.isActive('codeBlock') ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-            className="h-8 w-8 p-0"
-          >
-            <Code className="h-4 w-4" />
-          </Button>
-          <Button
-            type="button"
-            variant={editor.isActive('horizontalRule') ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => editor.chain().focus().setHorizontalRule().run()}
-            className="h-8 w-8 p-0"
-          >
-            <Minus className="h-4 w-4" />
-          </Button>
-        </div>
 
         <Separator orientation="vertical" className="h-6" />
 
-        {/* 미디어 및 링크 */}
-        <div className="flex items-center gap-1">
-          <Button
-            type="button"
-            variant={editor.isActive('link') ? 'default' : 'ghost'}
-            size="sm"
-            onClick={handleLink}
-            className="h-8 w-8 p-0"
-          >
-            <LinkIcon className="h-4 w-4" />
-          </Button>
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={() => fileInputRef.current?.click()}
-            className="h-8 w-8 p-0"
-          >
-            <ImageIcon className="h-4 w-4" />
-          </Button>
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleFileChange}
-            style={{ display: 'none' }}
-            accept="image/*"
-          />
-
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={handleYoutube}
-            className="h-8 w-8 p-0"
-          >
-            <Youtube className="h-4 w-4" />
-          </Button>
-        </div>
-
-        <Separator orientation="vertical" className="h-6" />
-
-        {/* 하이라이트 */}
-        <div className="flex items-center gap-1">
-          <Button
-            type="button"
-            variant={editor.isActive('highlight') ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => editor.chain().focus().toggleHighlight().run()}
-            className="h-8 w-8 p-0"
-          >
-            <Highlighter className="h-4 w-4" />
-          </Button>
-        </div>
-
-        <Separator orientation="vertical" className="h-6" />
-
-        {/* 정렬 */}
-        <div className="flex items-center gap-1">
-          <Button
-            type="button"
-            variant={editor.isActive({ textAlign: 'left' }) ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => editor.chain().focus().setTextAlign('left').run()}
-            className="h-8 w-8 p-0"
-          >
-            <AlignLeft className="h-4 w-4" />
-          </Button>
-          <Button
-            type="button"
-            variant={editor.isActive({ textAlign: 'center' }) ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => editor.chain().focus().setTextAlign('center').run()}
-            className="h-8 w-8 p-0"
-          >
-            <AlignCenter className="h-4 w-4" />
-          </Button>
-          <Button
-            type="button"
-            variant={editor.isActive({ textAlign: 'right' }) ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => editor.chain().focus().setTextAlign('right').run()}
-            className="h-8 w-8 p-0"
-          >
-            <AlignRight className="h-4 w-4" />
-          </Button>
-          <Button
-            type="button"
-            variant={editor.isActive({ textAlign: 'justify' }) ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => editor.chain().focus().setTextAlign('justify').run()}
-            className="h-8 w-8 p-0"
-          >
-            <AlignJustify className="h-4 w-4" />
-          </Button>
-        </div>
-
-        <Separator orientation="vertical" className="h-6" />
-
-        {/* 들여쓰기/내어쓰기 */}
-        <div className="flex items-center gap-1">
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={() => editor.chain().focus().liftListItem('listItem').run()}
-            disabled={!editor.can().liftListItem('listItem')}
-            className="h-8 w-8 p-0"
-          >
-            <Outdent className="h-4 w-4" />
-          </Button>
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={() => editor.chain().focus().sinkListItem('listItem').run()}
-            disabled={!editor.can().sinkListItem('listItem')}
-            className="h-8 w-8 p-0"
-          >
-            <Indent className="h-4 w-4" />
-          </Button>
-        </div>
-
-        <Separator orientation="vertical" className="h-6" />
-
-        {/* 실행 취소/다시 실행 */}
+        {/* Undo/Redo - 항상 표시 */}
         <div className="flex items-center gap-1">
           <Button
             type="button"
@@ -445,6 +340,15 @@ export default function TiptapToolbar({ editor, onImageUpload }: Props) {
             <Redo className="h-4 w-4" />
           </Button>
         </div>
+
+        {/* 숨겨진 파일 input */}
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={handleFileChange}
+          style={{ display: 'none' }}
+          accept="image/*"
+        />
       </div>
     </div>
   );
