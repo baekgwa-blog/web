@@ -51,10 +51,8 @@ export default function TiptapToolbar({ editor, onImageUpload }: Props) {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    try {
-      const url = await onImageUpload(file);
-      editor.chain().focus().setImage({ src: url }).run();
-    } catch {}
+    const url = await onImageUpload(file);
+    editor.chain().focus().setImage({ src: url }).run();
 
     if (event.target) event.target.value = '';
   };
