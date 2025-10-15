@@ -9,6 +9,7 @@
 
   a {
     color: #3b82f6;
+    font-weight: 700;
     text-decoration: underline;
     text-decoration-thickness: 1px;
     text-underline-offset: 2px;
@@ -75,8 +76,28 @@
   h4,
   h5,
   h6 {
-    line-height: 1.1;
+    line-height: 1.2;
     font-weight: bold;
+  }
+
+  /* H1: 포스트의 메인 제목 스타일 */
+  h1 {
+    padding-bottom: 0.5em;
+    border-bottom: 3px solid var(--foreground);
+  }
+
+  /* H2: 주요 섹션 제목 스타일 */
+  h2 {
+    padding-left: 0.5em;
+    border-left: 10px solid var(--primary);
+    margin-top: 1.5em;
+  }
+
+  h3 {
+    display: inline-block;
+    padding-left: 0.5em;
+    border-left: 3px solid var(--primary);
+    margin-top: 1.5em;
   }
 
   code {
@@ -247,7 +268,7 @@
 }
 
 .dark .highlight-yellow {
-  background-color: #713f12;
+  background-color: #52b96a;
 }
 
 strong,

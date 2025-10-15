@@ -10,6 +10,13 @@ import cpp from 'highlight.js/lib/languages/cpp';
 import json from 'highlight.js/lib/languages/json';
 import java from 'highlight.js/lib/languages/java';
 import c from 'highlight.js/lib/languages/c';
+import bash from 'highlight.js/lib/languages/bash';
+import dockerfile from 'highlight.js/lib/languages/dockerfile';
+import yaml from 'highlight.js/lib/languages/yaml';
+import sql from 'highlight.js/lib/languages/sql';
+import nginx from 'highlight.js/lib/languages/nginx';
+import properties from 'highlight.js/lib/languages/properties';
+import diff from 'highlight.js/lib/languages/diff';
 
 lowlight.registerLanguage('css', css);
 lowlight.registerLanguage('js', js);
@@ -25,6 +32,13 @@ lowlight.registerLanguage('python', python);
 lowlight.registerLanguage('cpp', cpp);
 lowlight.registerLanguage('c', c);
 lowlight.registerLanguage('java', java);
+lowlight.registerLanguage('bash', bash);
+lowlight.registerLanguage('dockerfile', dockerfile);
+lowlight.registerLanguage('yaml', yaml);
+lowlight.registerLanguage('sql', sql);
+lowlight.registerLanguage('nginx', nginx);
+lowlight.registerLanguage('properties', properties);
+lowlight.registerLanguage('diff', diff);
 
 const CustomCodeBlockLowlight = CodeBlockLowlight.extend({
   addKeyboardShortcuts() {
