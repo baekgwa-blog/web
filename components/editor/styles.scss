@@ -9,6 +9,7 @@
 
   a {
     color: #3b82f6;
+    font-weight: 700;
     text-decoration: underline;
     text-decoration-thickness: 1px;
     text-underline-offset: 2px;
@@ -75,8 +76,28 @@
   h4,
   h5,
   h6 {
-    line-height: 1.1;
+    line-height: 1.2;
     font-weight: bold;
+  }
+
+  /* H1: 포스트의 메인 제목 스타일 */
+  h1 {
+    padding-bottom: 0.5em;
+    border-bottom: 3px solid var(--foreground);
+  }
+
+  /* H2: 주요 섹션 제목 스타일 */
+  h2 {
+    padding-left: 0.5em;
+    border-left: 10px solid var(--primary);
+    margin-top: 1.5em;
+  }
+
+  h3 {
+    display: inline-block;
+    padding-left: 0.5em;
+    border-left: 3px solid var(--primary);
+    margin-top: 1.5em;
   }
 
   code {
@@ -86,11 +107,13 @@
   }
 
   pre {
-    background: #0d0d0d;
-    color: #fff;
+    background: var(--code-block-background);
+    color: var(--code-block-base-color);
     font-family: 'JetBrainsMono', monospace;
     padding: 0.75rem 1rem;
     border-radius: 0.5rem;
+    white-space: pre-wrap;
+    word-break: break-all;
 
     code {
       color: inherit;
@@ -171,20 +194,21 @@
     background-color: #faf594;
   }
 
-  //  table
   table {
-    border-collapse: collapse;
-    margin: 0;
-    overflow: hidden;
+    border-collapse: separate;
+    border-spacing: 0;
     table-layout: fixed;
     width: 100%;
+    margin: 1em 0;
+    border-radius: 0.5rem;
+    border: 1px solid var(--border);
 
     td,
     th {
-      border: 2px solid #ced4da;
+      border: 1px solid var(--border);
       box-sizing: border-box;
       min-width: 1em;
-      padding: 3px 5px;
+      padding: 0.5rem 0.75rem;
       position: relative;
       vertical-align: top;
 
@@ -194,13 +218,13 @@
     }
 
     th {
-      background-color: #f1f3f5;
+      background-color: var(--table-header-background);
       font-weight: bold;
       text-align: left;
     }
 
     .selectedCell:after {
-      background: rgba(200, 200, 255, 0.4);
+      background: rgba(128, 128, 255, 0.4);
       content: '';
       left: 0;
       right: 0;
@@ -212,8 +236,8 @@
     }
 
     .column-resize-handle {
-      background-color: #adf;
-      bottom: -2px;
+      background-color: hsl(var(--primary));
+      bottom: 0;
       position: absolute;
       right: -2px;
       pointer-events: none;
@@ -245,7 +269,7 @@
 }
 
 .dark .highlight-yellow {
-  background-color: #713f12;
+  background-color: #52b96a;
 }
 
 strong,

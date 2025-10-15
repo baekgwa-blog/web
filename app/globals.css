@@ -116,7 +116,11 @@
   /* 코드 블럭용 색상 */
   --code-block-background: hsla(0, 0%, 66%, 0.251);
   --code-block-base-color: var(--foreground);
-  --code-block-select-color: var(--border);
+
+  /* 테이블 용 */
+  --table-header-background: hsla(0, 0%, 65%, 0.517);
+  --table-row-background: hsl(var(--background));
+  --table-row-background-alt: hsl(var(--muted));
 
   --badge-random-1: hsla(200, 80%, 60%, 0.2); /* 파란색 계열 */
   --badge-random-2: rgba(235, 153, 71, 0.2); /* 주황색 계열 */
@@ -163,7 +167,11 @@
   /* 코드 블럭용 색상 */
   --code-block-background: var(--card);
   --code-block-base-color: hsl(247, 13%, 73%);
-  --code-block-select-color: var(--muted);
+
+  /* 테이블 용 */
+  --table-header-background: hsla(0, 0%, 15%, 0.606);
+  --table-row-background: hsl(var(--card));
+  --table-row-background-alt: hsl(var(--border));
 
   --badge-random-1: hsla(200, 59%, 70%, 0.2);
   --badge-random-2: hsla(30, 59%, 70%, 0.2);
