@@ -2,7 +2,7 @@
 
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, User, Pencil } from 'lucide-react'; // [수정] Pencil 아이콘 추가
+import { Calendar, User, Pencil, Eye } from 'lucide-react'; // [수정] Pencil 아이콘 추가
 import Image from 'next/image';
 import { Post } from '@/types/blog';
 import { formatDate } from '@/lib/date';
@@ -71,6 +71,12 @@ export function PostCard({ post, isFirst = false }: PostCardProps) {
             <div className="flex items-center gap-1.5" title="최근 수정일">
               <Pencil className="h-4 w-4" />
               <time dateTime={post.modifiedDate}>{formatDate(post.modifiedDate)}</time>
+            </div>
+          )}
+          {post.viewCount != null && (
+            <div className="flex items-center gap-1.5" title="조회수">
+              <Eye className="h-4 w-4" />
+              <span>{post.viewCount.toLocaleString()}</span>
             </div>
           )}
         </div>

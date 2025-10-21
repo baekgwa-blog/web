@@ -71,6 +71,7 @@ export default function PostList({ postsPromise }: PostListProps) {
     coverImage: item.thumbnailImage || defaultImage,
     tags: item.tagList,
     category: item.category,
+    viewCount: item.viewCount,
     author: '백과',
     date: item.createdAt,
     modifiedDate: item.modifiedAt,
