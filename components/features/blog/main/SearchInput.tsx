@@ -35,10 +35,16 @@ export default function SearchInput() {
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={handleKeyDown}
-        className="w-full pr-10"
+        className="h-11 w-full pr-10 !text-base"
         aria-label="검색어 입력"
       />
-      <Button type="button" size="icon" variant="outline" onClick={handleSearch} aria-label="검색">
+      <Button
+        type="button"
+        variant="outline"
+        onClick={handleSearch}
+        aria-label="검색"
+        className="h-11 w-11"
+      >
         <Search className="h-5 w-5" />
       </Button>
     </div>
