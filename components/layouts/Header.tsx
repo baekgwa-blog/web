@@ -56,7 +56,7 @@ export default function Header() {
               <span className="font-bold">백과 블로그</span>
             </Link>
           </div>
-          <nav className="flex items-center justify-center gap-8">
+          <nav className="flex items-center justify-center gap-10">
             {navLinks.map((link) => {
               const isActive =
                 link.href === '/blog' ? pathname.startsWith(link.href) : pathname === link.href;
