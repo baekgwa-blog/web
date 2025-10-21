@@ -13,11 +13,11 @@ function isTagElement(node: cheerio.Element): node is cheerio.TagElement {
 }
 
 interface BlogPostProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 export async function generateMetadata({ params }: BlogPostProps): Promise<Metadata> {
-  const { slug } = params;
+  const { slug } = await params;
   const decodedSlug = decodeURIComponent(slug);
 
   try {
@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: BlogPostProps): Promise<Metad
 
 // 블로그 상세 페이지 컴포넌트
 export default async function BlogPost({ params }: BlogPostProps) {
-  const { slug } = params;
+  const { slug } = await params;
   const decodedSlug = decodeURIComponent(slug);
   const response = await getPostDetail({ slug: decodedSlug });
 
