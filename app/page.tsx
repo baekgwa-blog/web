@@ -18,7 +18,7 @@ export default async function Home({ searchParams }: HomeProps) {
 
   return (
     <div className="container py-4">
-      <div className="mb-2">
+      <div className="mb-4">
         <BlogMainHeaderSection />
       </div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-[200px_1fr]">

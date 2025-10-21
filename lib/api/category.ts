@@ -3,7 +3,7 @@ import { ApiResponse, fetchApi } from '@/lib/api-client';
 export interface CategoryList {
   id: string;
   name: string;
-  count: number | 0;
+  count: number;
 }
 
 export async function getCategories(): Promise<CategoryList[]> {
@@ -14,12 +14,10 @@ export async function getCategories(): Promise<CategoryList[]> {
       return [];
     }
 
-    // 임시로 count를 0으로 설정
-    // todo : server 측에서 count 추가로 내려줘야함.
     return response.data.map((item) => ({
       id: item.id.toString(),
       name: item.name,
-      count: 0,
+      count: item.count,
     }));
   } catch {
     return [];
