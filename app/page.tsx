@@ -18,10 +18,10 @@ export default async function Home({ searchParams }: HomeProps) {
 
   return (
     <div className="container py-4">
-      <div className="mb-4">
+      <div className="mb-2">
         <BlogMainHeaderSection />
       </div>
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-[200px_1fr]">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-[200px_1fr]">
         {/* 좌측 사이드바 */}
         <aside className="order-1 md:order-none">
           <Suspense fallback={<CategorySectionSkeleton />}>

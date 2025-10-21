@@ -57,19 +57,20 @@ export default function PostList({ postsPromise }: PostListProps) {
     }
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  // 모든 페이지의 content를 flat하게 합침
   const allPosts: PostListItem[] =
     data?.pages.flatMap(
       (page: ApiResponse<PagingResponse<PostListItem>>) => page.data?.content ?? []
     ) ?? [];
 
-  // PostListItem[] → Post[] 변환
+  const defaultImage =
+    'https://baekgwa-blog-s3-bucket.s3.ap-northeast-2.amazonaws.com/post/20251021_ddb009f3';
   const mappedPosts = allPosts.map((item) => ({
     id: String(item.id),
     title: item.title,
     description: item.description,
-    coverImage: item.thumbnailImage,
+    coverImage: item.thumbnailImage || defaultImage,
     tags: item.tagList,
+    category: item.category,
     author: '백과',
     date: item.createdAt,
     modifiedDate: item.modifiedAt,
@@ -77,14 +78,13 @@ export default function PostList({ postsPromise }: PostListProps) {
   }));
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {mappedPosts.map((post, index) => (
-          <Link href={`/blog/${post.slug}`} key={post.id}>
-            <PostCard post={post} isFirst={index === 0} />
-          </Link>
-        ))}
-      </div>
+    <div className="space-y-4">
+      {mappedPosts.map((post, index) => (
+        <Link href={`/blog/${post.slug}`} key={post.id} className="block">
+          <PostCard post={post} isFirst={index === 0} />
+        </Link>
+      ))}
+
       {hasNextPage && !isFetchingNextPage && <div ref={ref} className="h-10" />}
       {isFetchingNextPage && (
         <div className="flex items-center justify-center gap-2 py-4">
