@@ -1,10 +1,12 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import Link from 'next/link';
-import { cn } from '@/lib/utils';
 import { use } from 'react';
+import Link from 'next/link';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 import { CategoryList } from '@/lib/api/category';
+import { Hash, LayoutGrid } from 'lucide-react';
 
 interface CategorySectionProps {
   categories: Promise<CategoryList[]>;
@@ -13,24 +15,55 @@ interface CategorySectionProps {
 
 export default function CategorySection({ categories, selectedCategory }: CategorySectionProps) {
   const allCategories = use(categories);
+  const totalCount = allCategories.reduce((sum, category) => sum + category.count, 0);
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>카테고리 목록</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2">
+          <Link href="/" className="group">
+            <div
+              className={cn(
+                'group-hover:bg-accent flex items-center justify-between rounded-md p-2 text-sm font-medium transition-colors',
+                !selectedCategory ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'
+              )}
+            >
+              <div className="flex items-center gap-2">
+                <LayoutGrid className="h-4 w-4" />
+                <span>전체보기</span>
+              </div>
+              <Badge
+                variant={!selectedCategory ? 'default' : 'secondary'}
+                className="transition-colors"
+              >
+                {totalCount}
+              </Badge>
+            </div>
+          </Link>
+          <hr className="my-1" />
           {allCategories.map((category) => (
-            <Link href={`?category=${category.name}`} key={category.name}>
+            <Link href={`?category=${category.name}`} key={category.name} className="group">
               <div
                 className={cn(
-                  'hover:bg-muted-foreground/10 text-muted-foreground flex items-center justify-between rounded-md p-1.5 text-sm transition-colors',
-                  selectedCategory === category.name &&
-                    'bg-muted-foreground/10 text-foreground font-medium'
+                  'group-hover:bg-accent flex items-center justify-between rounded-md p-2 text-sm transition-colors',
+                  selectedCategory === category.name
+                    ? 'bg-accent text-accent-foreground font-medium'
+                    : 'text-muted-foreground'
                 )}
               >
-                <span>{category.name}</span>
-                <span>{category.count}</span>
+                <div className="flex items-center gap-2">
+                  <Hash className="h-4 w-4" />
+                  <span>{category.name}</span>
+                </div>
+                <Badge
+                  variant={selectedCategory === category.name ? 'default' : 'secondary'}
+                  className="transition-colors"
+                >
+                  {category.count}
+                </Badge>
               </div>
             </Link>
           ))}

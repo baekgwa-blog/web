@@ -3,7 +3,7 @@ import { ApiResponse, fetchApi } from '@/lib/api-client';
 export interface CategoryList {
   id: string;
   name: string;
-  count?: number | 0;
+  count: number | 0;
 }
 
 export async function getCategories(): Promise<CategoryList[]> {
