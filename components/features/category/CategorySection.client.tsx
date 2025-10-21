@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { CategoryList } from '@/lib/api/category';
 import { Hash, LayoutGrid } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
 
 interface CategorySectionProps {
   categories: Promise<CategoryList[]>;
@@ -43,7 +44,7 @@ export default function CategorySection({ categories, selectedCategory }: Catego
               </Badge>
             </div>
           </Link>
-          <hr className="my-1" />
+          <Separator className="my-2" />
           {allCategories.map((category) => (
             <Link href={`?category=${category.name}`} key={category.name} className="group">
               <div
