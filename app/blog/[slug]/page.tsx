@@ -7,6 +7,8 @@ import { DesktopToc } from '@/components/features/blog/detail/DesktopToc';
 import { type FlatTocItem } from '@/components/features/blog/detail/TocList';
 import * as cheerio from 'cheerio';
 import { Metadata } from 'next';
+import { getStackRelativePost } from '@/lib/api/stack';
+import { PostStackContent } from '@/components/features/blog/detail/PostStackContent';
 
 function isTagElement(node: cheerio.Element): node is cheerio.TagElement {
   return node.type === 'tag';
@@ -38,6 +40,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
   const { slug } = await params;
   const decodedSlug = decodeURIComponent(slug);
   const response = await getPostDetail({ slug: decodedSlug });
+  const stackResponse = await getStackRelativePost({ postId: response.id });
 
   // Cheerio를 사용해 목차(TOC) 생성
   const $ = cheerio.load(response.content);
@@ -58,18 +61,17 @@ export default async function BlogPost({ params }: BlogPostProps) {
             author={response.author}
             createdAt={response.createdAt}
           />
-
           <Separator className="my-6 border-2" />
-
           {/* 모바일 목차 */}
           {toc.length > 0 && (
             <div className="mb-6 md:hidden">
               <MobileToc toc={toc} />
             </div>
           )}
+          {/* Stack(시리즈) 항목 */}
+          <PostStackContent stackResponse={stackResponse} currentPostId={response.id} />
 
           <PostDetailContent content={response.content} />
-
           <Separator className="my-16" />
         </section>
 
