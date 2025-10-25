@@ -17,6 +17,7 @@ export interface GetAllStackListResponse {
   category: string;
   thumbnailImage: string;
   createdAt: string;
+  count: number;
 }
 
 export interface StackPostInfo {

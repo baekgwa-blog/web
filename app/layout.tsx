@@ -33,7 +33,7 @@ export default function RootLayout({
         <Providers>
           <div className="flex min-h-screen flex-col">
             <Header />
-            <main className="flex-1">{children}</main>
+            <main className="container flex-1">{children}</main>
             <Footer />
             <Toaster position="bottom-center" expand={false} closeButton richColors />
           </div>

@@ -8,12 +8,19 @@ import { useAuthStore } from '@/lib/store/auth';
 import { LogoutButton } from '../features/user/LogoutButton';
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { motion, useScroll, useSpring } from 'framer-motion'; // framer-motion import
+import { motion, useScroll, useSpring } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
+const checkIsActive = (pathname: string, href: string): boolean => {
+  if (href === '/') {
+    return pathname === '/';
+  }
+  return pathname === href || pathname.startsWith(`${href}/`);
+};
+
 const navLinks = [
-  { href: '/', label: '홈' },
   { href: '/blog', label: '블로그' },
+  { href: '/stack', label: '스택 시리즈' },
   { href: '/about', label: '소개' },
 ];
 
@@ -58,8 +65,7 @@ export default function Header() {
           </div>
           <nav className="flex items-center justify-center gap-10">
             {navLinks.map((link) => {
-              const isActive =
-                link.href === '/blog' ? pathname.startsWith(link.href) : pathname === link.href;
+              const isActive = checkIsActive(pathname, link.href);
 
               return (
                 <Link
