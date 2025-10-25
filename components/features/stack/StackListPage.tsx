@@ -71,7 +71,7 @@ export async function StackListPage({ promiseData }: StackListPageProps) {
                 </span>
                 <span className="flex items-center gap-1.5">
                   <CalendarDays className="h-4 w-4" />
-                  <span>{formatDate(stack.createdAt)} 업데이트</span>
+                  <span>{formatDate(stack.updatedAt)} 업데이트</span>
                 </span>
               </div>
             </div>

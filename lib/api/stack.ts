@@ -16,7 +16,7 @@ export interface GetAllStackListResponse {
   description: string;
   category: string;
   thumbnailImage: string;
-  createdAt: string;
+  updatedAt: string;
   count: number;
 }
 
