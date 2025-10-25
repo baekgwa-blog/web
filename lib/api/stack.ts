@@ -10,6 +10,15 @@ export interface GetStackRelativePostResponse {
   stackPostInfoList: StackPostInfo[];
 }
 
+export interface GetAllStackListResponse {
+  stackId: number;
+  title: string;
+  description: string;
+  category: string;
+  thumbnailImage: string;
+  createdAt: string;
+}
+
 export interface StackPostInfo {
   postId: number;
   title: string;
@@ -21,6 +30,16 @@ export async function getStackRelativePost(
   data: GetStackRelativePostRequest
 ): Promise<ApiResponse<GetStackRelativePostResponse>> {
   return fetchApi<ApiResponse<GetStackRelativePostResponse>>(`/stack/post/${data.postId}`, {
+    method: 'GET',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+}
+
+export async function getAllStack(): Promise<ApiResponse<GetAllStackListResponse[]>> {
+  return fetchApi<ApiResponse<GetAllStackListResponse[]>>(`/stack`, {
     method: 'GET',
     credentials: 'include',
     headers: {
