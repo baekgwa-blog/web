@@ -10,6 +10,13 @@ import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Menu } from 'lucide-react';
 
 const checkIsActive = (pathname: string, href: string): boolean => {
   if (href === '/') {
@@ -57,22 +64,23 @@ export default function Header() {
       )}
     >
       <div className="container flex h-[var(--header-height)] items-center px-4">
-        <div className="grid w-full grid-cols-3 items-center">
+        <div className="hidden w-full grid-cols-[auto_1fr_auto] items-center md:grid">
           <div className="flex items-center justify-start">
             <Link href="/" className="text-2xl font-semibold">
               <span className="font-bold">백과 블로그</span>
             </Link>
           </div>
-          <nav className="flex items-center justify-center gap-10">
-            {navLinks.map((link) => {
+
+          <nav className="flex items-center justify-center gap-10 overflow-hidden whitespace-nowrap">
+            {navLinks.map((link, index) => {
               const isActive = checkIsActive(pathname, link.href);
 
               return (
                 <Link
-                  key={link.href}
+                  key={`${link.href}-${index}`}
                   href={link.href}
                   className={cn(
-                    'hover:text-primary text-xl font-semibold transition-colors',
+                    'hover:text-primary truncate text-xl font-semibold transition-colors',
                     isActive ? 'text-primary' : 'text-muted-foreground'
                   )}
                 >
@@ -81,6 +89,7 @@ export default function Header() {
               );
             })}
           </nav>
+
           <div className="flex items-center justify-end gap-2">
             <ThemeToggle />
             {isLoggedIn ? (
@@ -95,7 +104,45 @@ export default function Header() {
             )}
           </div>
         </div>
+
+        <div className="flex w-full items-center justify-between md:hidden">
+          <Link href="/" className="text-2xl font-semibold">
+            <span className="font-bold">백과 블로그</span>
+          </Link>
+
+          <div className="flex items-center gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Menu className="h-5 w-5" />
+                  <span className="sr-only">메뉴 열기</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                {navLinks.map((link) => (
+                  <DropdownMenuItem key={link.href} asChild>
+                    <Link href={link.href}>{link.label}</Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <ThemeToggle />
+
+            {isLoggedIn ? (
+              <>
+                <Button asChild size="sm" className="gap-2">
+                  <Link href="/blog/write">글쓰기</Link>
+                </Button>
+                <LogoutButton />
+              </>
+            ) : (
+              <LoginForm />
+            )}
+          </div>
+        </div>
       </div>
+
       <motion.div
         className="bg-primary h-1 origin-left"
         style={{ scaleX: isMounted ? scaleX : 0 }}
