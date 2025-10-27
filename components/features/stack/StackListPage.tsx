@@ -36,7 +36,7 @@ export async function StackListPage({ promiseData }: StackListPageProps) {
 
   return (
     <div className="flex flex-col gap-8 p-4 md:p-6 lg:p-8">
-      {stackList.map((stack) => {
+      {stackList.map((stack, index) => {
         const imageUrl = stack.thumbnailImage || DEFAULT_IMAGE_URL;
 
         return (
@@ -52,6 +52,7 @@ export async function StackListPage({ promiseData }: StackListPageProps) {
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 className="object-cover"
+                priority={index === 0}
               />
               <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/50 via-black/20 to-transparent p-4 text-white">
                 <h2 className="line-clamp-2 text-2xl font-bold">{stack.title}</h2>
