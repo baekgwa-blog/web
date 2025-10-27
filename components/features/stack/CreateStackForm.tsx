@@ -47,7 +47,11 @@ export default function CreateStackForm() {
     if (state.success) {
       toast.success(state.message);
       queryClient.invalidateQueries({ queryKey: ['stacks'] });
-      router.push('/stack');
+      if (state.stackId) {
+        router.push(`/stack/${state.stackId}`);
+      } else {
+        router.push('/stack');
+      }
     } else if (state.message && !state.errors) {
       toast.error(state.message);
     }

@@ -48,6 +48,7 @@ export interface CreateNewStackFormState {
   message: string;
   errors?: NewStackError;
   success?: boolean;
+  stackId?: number;
 }
 
 export async function createNewStackAction(
@@ -99,11 +100,13 @@ export async function createNewStackAction(
 
   try {
     const dataToSubmit: PostNewStackRequest = validatedFields.data;
-    await postStackRegister(dataToSubmit);
+    const response = await postStackRegister(dataToSubmit);
+    const stackId = response.data!.stackId;
 
     return {
       message: '새 스택이 성공적으로 등록되었습니다.',
       success: true,
+      stackId: stackId,
     };
   } catch (e) {
     const message =
