@@ -2,6 +2,7 @@ import { ApiResponse, fetchApi } from '@/lib/api-client';
 
 export enum FileType {
   POST_IMAGE = 'POST_IMAGE',
+  STACK_SERIES_IMAGE = 'STACK_SERIES_IMAGE',
 }
 
 export interface UploadImagePostBodys {
