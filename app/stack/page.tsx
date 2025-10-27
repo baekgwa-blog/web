@@ -1,3 +1,4 @@
+import { StackHeader } from '@/components/features/stack/StackHeader';
 import { StackListPage } from '@/components/features/stack/StackListPage';
 import { StackListPageLoading } from '@/components/features/stack/StackListPageLoading';
 import { getAllStack } from '@/lib/api/stack';
@@ -10,8 +11,11 @@ export async function generateMetadata() {
 export default async function StackPage() {
   const allStackPromise = getAllStack();
   return (
-    <Suspense fallback={<StackListPageLoading />}>
-      <StackListPage promiseData={allStackPromise} />
-    </Suspense>
+    <div>
+      <StackHeader />
+      <Suspense fallback={<StackListPageLoading />}>
+        <StackListPage promiseData={allStackPromise} />
+      </Suspense>
+    </div>
   );
 }
