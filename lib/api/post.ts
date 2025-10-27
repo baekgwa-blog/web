@@ -7,6 +7,7 @@ export interface GetPostListParams {
   sort?: string;
   page?: number;
   keyword?: string;
+  size?: string;
 }
 
 export interface GetPostDetailParams {
@@ -27,12 +28,14 @@ export const getPostList = async ({
   sort,
   page,
   keyword,
+  size,
 }: GetPostListParams = {}): Promise<ApiResponse<PagingResponse<PostListItem>>> => {
   const params = new URLSearchParams();
   if (category) params.set('category', category);
   if (sort) params.set('sort', sort);
   if (page) params.set('page', page.toString());
   if (keyword) params.set('keyword', keyword);
+  if (size) params.set('size', size);
 
   return fetchApi<PagingResponse<PostListItem>>(`/post?${params.toString()}`, {
     method: 'GET',
