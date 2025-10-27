@@ -35,7 +35,7 @@ export default function RootLayout({
             <Header />
             <main className="container flex-1">{children}</main>
             <Footer />
-            <Toaster position="bottom-center" expand={false} closeButton richColors />
+            <Toaster position="top-center" expand={false} closeButton richColors />
           </div>
         </Providers>
       </body>

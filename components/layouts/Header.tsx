@@ -7,7 +7,6 @@ import { LoginForm } from '../features/user/LoginForm';
 import { useAuthStore } from '@/lib/store/auth';
 import { LogoutButton } from '../features/user/LogoutButton';
 import { useEffect, useState } from 'react';
-import { usePathname } from 'next/navigation';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import {
@@ -17,6 +16,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Menu } from 'lucide-react';
+import { usePathname, useSearchParams, useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 const checkIsActive = (pathname: string, href: string): boolean => {
   if (href === '/') {
@@ -37,6 +38,17 @@ export default function Header() {
 
   const [scrolled, setScrolled] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const authRequired = searchParams.get('auth_required');
+    console.log('authRequired : ' + authRequired);
+
+    if (authRequired === 'true') {
+      toast.error('로그인이 필요한 서비스입니다.');
+    }
+  }, [searchParams, pathname, router, isMounted]);
 
   useEffect(() => {
     setIsMounted(true);
