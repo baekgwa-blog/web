@@ -6,7 +6,7 @@ export async function generateMetadata() {
 
 export default function WritePage() {
   return (
-    <div className="container flex h-[calc(100vh-var(--header-height))] flex-col px-4 py-4">
+    <div className="flex h-[calc(100vh-var(--header-height))] flex-col px-4 py-4">
       <WritePostForm />
     </div>
   );
