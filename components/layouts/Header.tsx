@@ -77,7 +77,7 @@ export default function Header() {
         <div className="hidden w-full grid-cols-[auto_1fr_auto] items-center md:grid">
           <div className="flex items-center justify-start">
             <Link href="/" className="text-2xl font-semibold">
-              <span className="font-bold">백과 블로그</span>
+              <span className="font-title">백과's 기술 노트</span>
             </Link>
           </div>
 
