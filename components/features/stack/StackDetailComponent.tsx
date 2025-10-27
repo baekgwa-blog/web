@@ -19,12 +19,11 @@ type Props = {
 
 export function StackDetailComponent({ promiseData }: Props) {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-  let stackDetail: GetStackDetailResponse;
 
-  try {
-    const response = use(promiseData);
-    stackDetail = response.data!;
-  } catch {
+  const response = use(promiseData);
+  const stackDetail = response.data!;
+
+  if (!stackDetail) {
     notFound();
   }
 
