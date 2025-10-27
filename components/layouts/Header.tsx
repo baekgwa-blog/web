@@ -32,6 +32,17 @@ const navLinks = [
   { href: '/about', label: '소개' },
 ];
 
+const wiggleVariant = {
+  hover: {
+    rotate: [-3, 3, -3],
+    transition: {
+      duration: 1,
+      ease: 'easeInOut',
+      repeat: Infinity,
+    } as const,
+  },
+};
+
 export default function Header() {
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
   const pathname = usePathname();
@@ -77,7 +88,15 @@ export default function Header() {
         <div className="hidden w-full grid-cols-[auto_1fr_auto] items-center md:grid">
           <div className="flex items-center justify-start">
             <Link href="/" className="text-2xl font-semibold">
-              <span className="font-title">백과's 기술 노트</span>
+              <motion.span className="font-title" whileHover="hover">
+                <motion.span className="inline-block text-green-600" variants={wiggleVariant}>
+                  백과
+                </motion.span>
+                <motion.span className="text-foreground/80 inline-block" variants={wiggleVariant}>
+                  {' '}
+                  블로그
+                </motion.span>
+              </motion.span>
             </Link>
           </div>
 
