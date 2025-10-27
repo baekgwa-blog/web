@@ -45,11 +45,40 @@ export interface GetStackDetailResponse {
   stackPostInfoList: StackPostInfo[];
 }
 
+export interface PostNewStackPost {
+  postId: number;
+  sequence: number;
+}
+
+export interface PostNewStackRequest {
+  title: string;
+  description: string;
+  thumbnailImage: string;
+  stackPostList: PostNewStackPost[];
+}
+
+export interface PostNewStackResponse {
+  stackId: number;
+}
+
+export async function postStackRegister(
+  data: PostNewStackRequest
+): Promise<ApiResponse<PostNewStackResponse>> {
+  return fetchApi<PostNewStackResponse>(`/stack`, {
+    method: 'POST',
+    body: JSON.stringify(data),
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+}
+
 export async function getStackDetail(
   data: GetStackDetailRequest
 ): Promise<ApiResponse<GetStackDetailResponse>> {
   const { stackId } = data;
-  return fetchApi<ApiResponse<GetStackDetailResponse>>(`/stack/${stackId}`, {
+  return fetchApi<GetStackDetailResponse>(`/stack/${stackId}`, {
     method: 'GET',
     credentials: 'include',
     headers: {
@@ -61,7 +90,7 @@ export async function getStackDetail(
 export async function getStackRelativePost(
   data: GetStackRelativePostRequest
 ): Promise<ApiResponse<GetStackRelativePostResponse>> {
-  return fetchApi<ApiResponse<GetStackRelativePostResponse>>(`/stack/post/${data.postId}`, {
+  return fetchApi<GetStackRelativePostResponse>(`/stack/post/${data.postId}`, {
     method: 'GET',
     credentials: 'include',
     headers: {
@@ -71,7 +100,7 @@ export async function getStackRelativePost(
 }
 
 export async function getAllStack(): Promise<ApiResponse<GetAllStackListResponse[]>> {
-  return fetchApi<ApiResponse<GetAllStackListResponse[]>>(`/stack`, {
+  return fetchApi<GetAllStackListResponse[]>(`/stack`, {
     method: 'GET',
     credentials: 'include',
     headers: {

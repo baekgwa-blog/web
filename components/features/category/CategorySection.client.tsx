@@ -8,14 +8,15 @@ import { cn } from '@/lib/utils';
 import { CategoryList } from '@/lib/api/category';
 import { Hash, LayoutGrid } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
+import { ApiResponse } from '@/lib/api-client';
 
 interface CategorySectionProps {
-  categories: Promise<CategoryList[]>;
+  categories: Promise<ApiResponse<CategoryList[]>>;
   selectedCategory?: string;
 }
 
 export default function CategorySection({ categories, selectedCategory }: CategorySectionProps) {
-  const allCategories = use(categories);
+  const allCategories = use(categories).data!;
   const totalCount = allCategories.reduce((sum, category) => sum + category.count, 0);
 
   return (

@@ -1,7 +1,6 @@
 import { ApiResponse, fetchApi } from '@/lib/api-client';
 import { PostListItem, PostDetailItem, CreatePostResponse } from '@/types/post';
 import { PagingResponse } from '@/types/paging';
-import { notFound } from 'next/navigation';
 
 export interface GetPostListParams {
   category?: string;
@@ -35,28 +34,28 @@ export const getPostList = async ({
   if (page) params.set('page', page.toString());
   if (keyword) params.set('keyword', keyword);
 
-  try {
-    const response = await fetchApi<ApiResponse<PagingResponse<PostListItem>>>(
-      `/post?${params.toString()}`
-    );
-    return response;
-  } catch {
-    notFound();
-  }
+  return fetchApi<PagingResponse<PostListItem>>(`/post?${params.toString()}`, {
+    method: 'GET',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 };
 
-export const getPostDetail = async ({ slug }: GetPostDetailParams): Promise<PostDetailItem> => {
+export const getPostDetail = async ({
+  slug,
+}: GetPostDetailParams): Promise<ApiResponse<PostDetailItem>> => {
   const params = new URLSearchParams();
   if (slug) params.set('slug', slug);
 
-  try {
-    const response = await fetchApi<ApiResponse<PostDetailItem>>(
-      `/post/detail?${params.toString()}`
-    );
-    return response.data!;
-  } catch {
-    notFound();
-  }
+  return fetchApi<PostDetailItem>(`/post/detail?${params.toString()}`, {
+    method: 'GET',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 };
 
 export const createPost = async ({
@@ -67,7 +66,7 @@ export const createPost = async ({
   tagIdList,
   categoryId,
 }: CreatePostBodys): Promise<ApiResponse<CreatePostResponse>> => {
-  const response = await fetchApi<ApiResponse<CreatePostResponse>>('/post', {
+  return fetchApi<CreatePostResponse>('/post', {
     method: 'POST',
     credentials: 'include',
     body: JSON.stringify({
@@ -79,5 +78,4 @@ export const createPost = async ({
       categoryId,
     }),
   });
-  return response;
 };

@@ -43,8 +43,6 @@ export default function Header() {
 
   useEffect(() => {
     const authRequired = searchParams.get('auth_required');
-    console.log('authRequired : ' + authRequired);
-
     if (authRequired === 'true') {
       toast.error('로그인이 필요한 서비스입니다.');
     }

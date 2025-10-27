@@ -1,4 +1,4 @@
-import { ApiResponse, fetchFormApi } from '@/lib/api-client';
+import { ApiResponse, fetchApi } from '@/lib/api-client';
 
 export enum FileType {
   POST_IMAGE = 'POST_IMAGE',
@@ -18,15 +18,14 @@ export interface UploadImageResponse {
 export const uploadImage = async ({
   file,
   type,
-}: UploadImagePostBodys): Promise<UploadImageResponse> => {
+}: UploadImagePostBodys): Promise<ApiResponse<UploadImageResponse>> => {
   const formData = new FormData();
   formData.append('file', file);
   formData.append('type', type);
 
-  const response = await fetchFormApi<ApiResponse<UploadImageResponse>>('/file/image', {
+  return fetchApi<UploadImageResponse>('/file/image', {
     method: 'POST',
     body: formData,
     credentials: 'include',
   });
-  return response.data!;
 };
