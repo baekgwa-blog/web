@@ -6,9 +6,11 @@ import type { GetStackDetailResponse } from '@/lib/api/stack';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { ArrowUp, ArrowDown } from 'lucide-react';
+import { ArrowUp, ArrowDown, Pencil } from 'lucide-react';
 import { ApiResponse } from '@/lib/api-client';
 import { StackPostItem } from './StackPostItem';
+import { useAuthStore } from '@/lib/store/auth';
+import Link from 'next/link';
 
 const STACK_DEFAULT_IMAGE_URL =
   'https://baekgwa-blog-s3-bucket.s3.ap-northeast-2.amazonaws.com/stack/20251025_7db17a92';
@@ -22,6 +24,7 @@ export function StackDetailComponent({ promiseData }: Props) {
 
   const response = use(promiseData);
   const stackDetail = response.data!;
+  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
 
   if (!stackDetail) {
     notFound();
@@ -64,21 +67,33 @@ export function StackDetailComponent({ promiseData }: Props) {
           <div className="mb-2">
             <p className="text-primary text-sm font-medium">스택 시리즈</p>
           </div>
-          <div className="flex items-start justify-between">
+          <div className="flex items-start justify-between gap-4">
             <h1 className="text-4xl font-extrabold tracking-tight">{stackDetail.title}</h1>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={toggleSort}
-              className="ml-4 w-[110px] shrink-0"
-            >
-              {sortOrder === 'asc' ? (
-                <ArrowUp className="mr-2 h-4 w-4" />
-              ) : (
-                <ArrowDown className="mr-2 h-4 w-4" />
+
+            <div className="ml-4 flex shrink-0 gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={toggleSort}
+                className="w-[110px] shrink-0"
+              >
+                {sortOrder === 'asc' ? (
+                  <ArrowUp className="mr-2 h-4 w-4" />
+                ) : (
+                  <ArrowDown className="mr-2 h-4 w-4" />
+                )}
+                {sortOrder === 'asc' ? '오름차순' : '내림차순'}
+              </Button>
+
+              {isLoggedIn && (
+                <Button variant="outline" size="icon" asChild>
+                  <Link href={`/stack/${stackDetail.stackId}/edit`}>
+                    <Pencil className="h-4 w-4" />
+                    <span className="sr-only">수정</span>
+                  </Link>
+                </Button>
               )}
-              {sortOrder === 'asc' ? '오름차순' : '내림차순'}
-            </Button>
+            </div>
           </div>
           <p className="text-muted-foreground mt-4 text-lg">{stackDetail.description}</p>
         </div>
