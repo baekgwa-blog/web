@@ -61,6 +61,62 @@ export interface PostNewStackResponse {
   stackId: number;
 }
 
+export interface GetStackPostModifyResponse {
+  postId: number;
+  sequence: number;
+  title: string;
+}
+
+export interface GetStackModifyResponse {
+  title: string;
+  description: string;
+  thumbnailImage: string;
+  category: string;
+  stackPostList: GetStackPostModifyResponse[];
+}
+
+export interface PutStackModifyRequest {
+  title: string;
+  description: string;
+  thumbnailImage: string;
+  stackPostList: PutStackPostModifyRequest[];
+}
+
+export interface PutStackPostModifyRequest {
+  postId: number;
+  sequence: number;
+}
+
+export interface PutStackPostModifyResponse {
+  stackId: number;
+}
+
+export async function putStackModify(
+  stackId: number,
+  data: PutStackModifyRequest
+): Promise<ApiResponse<PutStackPostModifyResponse>> {
+  return fetchApi<PutStackPostModifyResponse>(`/stack/${stackId}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+}
+
+export async function getStackModify(
+  stackId: number
+): Promise<ApiResponse<GetStackModifyResponse>> {
+  return fetchApi<GetStackModifyResponse>(`/stack/modify/${stackId}`, {
+    method: 'GET',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+}
+
 export async function postStackRegister(
   data: PostNewStackRequest
 ): Promise<ApiResponse<PostNewStackResponse>> {
