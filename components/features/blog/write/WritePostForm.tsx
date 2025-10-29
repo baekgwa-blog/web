@@ -69,14 +69,13 @@ export default function WritePostForm() {
   const handleImageUpload = async (file: File): Promise<string> => {
     const toastId = toast.loading('이미지를 업로드하는 중입니다...');
     try {
-      const { fileUrl } = await uploadImage({
+      const response = await uploadImage({
         file,
         type: FileType.POST_IMAGE,
       });
       toast.success('이미지 업로드가 완료되었습니다.', { id: toastId });
-      return fileUrl; // 성공 시 URL을 반환합니다.
-    } catch (error) {
-      console.error('Image upload failed:', error);
+      return response.data!.fileUrl; // 성공 시 URL을 반환합니다.
+    } catch {
       toast.error('이미지 업로드에 실패했습니다.', { id: toastId });
       throw new Error('Image upload failed'); // 실패 시 에러를 던집니다.
     }

@@ -58,7 +58,7 @@ export function TocList({ toc }: TocListProps) {
       {toc.map(({ id, text, level }) => {
         const isActive = activeId === id;
         return (
-          <li key={id}>
+          <li key={`${id}-${level}`}>
             <a
               href={`#${id}`}
               onClick={() => handleLinkClick(id)}

@@ -16,6 +16,7 @@ import { cn } from '@/lib/utils';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { toast } from 'sonner';
 import { useDebounce } from '@/lib/hooks/use-debounce';
+import { ApiError } from '@/lib/api-client';
 
 interface TagSelectorProps {
   selectedTags: TagItem[];
@@ -33,7 +34,16 @@ export default function TagSelector({ selectedTags, onTagToggle, error }: TagSel
   const debouncedTagSearch = useDebounce(tagSearch, 300);
 
   useEffect(() => {
-    getTagList({ keyword: debouncedTagSearch }).then(setTagOptions);
+    const fetchTag = async () => {
+      try {
+        const response = await getTagList({ keyword: debouncedTagSearch });
+        setTagOptions(response.data!);
+      } catch (err) {
+        const errMessage = err instanceof ApiError ? err.message : '태그 목록 조회 실패';
+        toast.error(errMessage);
+      }
+    };
+    fetchTag();
   }, [debouncedTagSearch]);
 
   useEffect(() => {

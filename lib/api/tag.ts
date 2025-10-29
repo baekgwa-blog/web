@@ -1,5 +1,4 @@
-import { fetchApi } from '../api-client';
-import { ApiResponse } from '@/lib/api-client';
+import { ApiResponse, fetchApi } from '../api-client';
 
 export interface TagItem {
   name: string;
@@ -10,14 +9,17 @@ export interface GetTagListParams {
   keyword?: string;
 }
 
-export const getTagList = async ({ keyword }: GetTagListParams = {}): Promise<TagItem[]> => {
+export const getTagList = async ({ keyword }: GetTagListParams = {}): Promise<
+  ApiResponse<TagItem[]>
+> => {
   const params = new URLSearchParams();
   if (keyword) params.set('keyword', keyword);
 
-  try {
-    const response = await fetchApi<ApiResponse<TagItem[]>>(`/tag?${params.toString()}`);
-    return response.data || [];
-  } catch {
-    return [];
-  }
+  return fetchApi<TagItem[]>(`/tag?${params.toString()}`, {
+    method: 'GET',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 };

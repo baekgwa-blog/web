@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { ApiError } from '@/lib/api-client';
 
 interface CategorySelectorProps {
   value: string;
@@ -22,7 +23,17 @@ export default function CategorySelector({ value, onValueChange, error }: Catego
   const [categoryOptions, setCategoryOptions] = useState<CategoryList[]>([]);
 
   useEffect(() => {
-    getCategories().then(setCategoryOptions);
+    const fetchCategory = async () => {
+      try {
+        const response = await getCategories();
+        setCategoryOptions(response.data!);
+      } catch (err) {
+        const errMessage =
+          err instanceof ApiError ? err.message : '카테고리 조회 실패. 서버 상태가 이상합니다.';
+        toast.error(errMessage);
+      }
+    };
+    fetchCategory();
   }, []);
 
   useEffect(() => {

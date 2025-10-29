@@ -8,39 +8,53 @@ export interface ApiResponse<T> {
 }
 
 export class ApiError extends Error {
-  constructor(
-    public status: number,
-    message: string
-  ) {
+  public status: number;
+  public code?: string;
+
+  constructor(status: number, message: string, code?: string) {
     super(message);
     this.name = 'ApiError';
+    this.status = status;
+    this.code = code;
   }
 }
 
-async function handleResponse<T>(response: Response): Promise<T> {
-  if (!response.ok) {
-    throw new ApiError(response.status, `API 요청 실패: ${response.statusText}`);
+export async function fetchApi<T>(endpoint: string, options: RequestInit): Promise<ApiResponse<T>> {
+  const headers = new Headers(options.headers);
+
+  if (!headers.has('Content-Type')) {
+    if (!(options.body instanceof FormData)) {
+      headers.set('Content-Type', 'application/json');
+    }
   }
-  return response.json();
-}
 
-export async function fetchApi<T>(endpoint: string, options?: RequestInit): Promise<T> {
-  const url = `${API_URL}${endpoint}`;
-  // console.log('🔍 API_URL =', API_URL, '➡️ 최종 url =', url);
-  const response = await fetch(url, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  });
-  return handleResponse<T>(response);
-}
+  if (typeof window === 'undefined') {
+    const { cookies } = await import('next/headers');
+    const cookieStore = await cookies();
+    const cookieHeader = cookieStore
+      .getAll()
+      .map(({ name, value }) => `${name}=${encodeURIComponent(value)}`)
+      .join('; ');
 
-export async function fetchFormApi<T>(endpoint: string, options?: RequestInit): Promise<T> {
-  const url = `${API_URL}${endpoint}`;
-  const response = await fetch(url, {
+    if (cookieHeader) {
+      headers.set('Cookie', cookieHeader);
+    }
+  }
+
+  const finalOptions: RequestInit = {
     ...options,
-  });
-  return handleResponse<T>(response);
+    headers: headers,
+    credentials: 'include',
+  };
+
+  const response = await fetch(`${API_URL}${endpoint}`, finalOptions);
+
+  if (response.ok) {
+    return response.json() as Promise<ApiResponse<T>>;
+  }
+
+  const errBody = await response.json().catch(() => null);
+  const message = errBody?.message ?? response.statusText;
+  const code = errBody?.code ?? response.status.toString();
+  throw new ApiError(response.status, message, code);
 }
