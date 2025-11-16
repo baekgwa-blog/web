@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState } from 'react';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ThemeProvider } from '@/components/theme/ThemeProvider';
+import { ChatProvider } from '@/components/features/chatbot/chat-provider';
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -20,8 +21,10 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-        {children}
-        <ReactQueryDevtools initialIsOpen={false} />
+        <ChatProvider>
+          {children}
+          <ReactQueryDevtools initialIsOpen={false} />
+        </ChatProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );
