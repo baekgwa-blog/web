@@ -11,6 +11,8 @@ import { getStackRelativePost } from '@/lib/api/stack';
 import { PostStackContent } from '@/components/features/blog/detail/PostStackContent';
 import { notFound } from 'next/navigation';
 
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://blog.baekgwa.site';
+
 function isTagElement(node: cheerio.Element): node is cheerio.TagElement {
   return node.type === 'tag';
 }
@@ -25,9 +27,45 @@ export async function generateMetadata({ params }: BlogPostProps): Promise<Metad
 
   try {
     const response = await getPostDetail({ slug: decodedSlug });
+
+    if (!response.data) {
+      return {
+        title: 'Post Not Found',
+      };
+    }
+
+    const { title, description, thumbnailImage } = response.data;
+    const url = `${baseUrl}/blog/${slug}`;
+    const imageUrl =
+      thumbnailImage ||
+      `https://baekgwa-blog-s3-bucket.s3.ap-northeast-2.amazonaws.com/post/20251021_ddb009f3`;
+
     return {
-      title: response.data!.title,
-      description: response.data!.description,
+      title,
+      description,
+      openGraph: {
+        type: 'article',
+        url,
+        title,
+        description,
+        images: [
+          {
+            url: imageUrl,
+            width: 1200,
+            height: 630,
+            alt: title,
+          },
+        ],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title,
+        description,
+        images: [imageUrl],
+      },
+      alternates: {
+        canonical: url,
+      },
     };
   } catch {
     return {
