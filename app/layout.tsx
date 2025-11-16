@@ -7,6 +7,9 @@ import Footer from '@/components/layouts/Footer';
 import Providers from './providers';
 import { Toaster } from '@/components/ui/sonner';
 import { Suspense } from 'react';
+import { ChatButton } from '@/components/features/chatbot/ChatButton';
+import { ChatDialog } from '@/components/features/chatbot/ChatDialog';
+import { ChatController } from '@/components/features/chatbot/ChatController';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -49,6 +52,9 @@ export default function RootLayout({
             <Footer />
             <Toaster position="top-center" expand={false} closeButton richColors />
           </div>
+          <ChatController />
+          <ChatButton />
+          <ChatDialog />
         </Providers>
       </body>
     </html>
