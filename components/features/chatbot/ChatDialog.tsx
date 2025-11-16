@@ -151,6 +151,17 @@ export const ChatDialog = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // Dialog가 열릴 때 이전 대화가 있으면 맨 아래로 스크롤
+  useEffect(() => {
+    if (isChatOpen && messages.length > 0) {
+      // Dialog 애니메이션이 완료된 후 스크롤
+      const timer = setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [isChatOpen, messages.length]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
