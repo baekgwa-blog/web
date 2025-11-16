@@ -2,6 +2,7 @@
 
 import { ChatStreamPayload, streamChat } from '@/lib/sse-client';
 import React, { createContext, useContext, useState, ReactNode, useRef } from 'react';
+import { flushSync } from 'react-dom';
 
 export interface Message {
   id: string;
@@ -29,8 +30,8 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // 스트리밍 중인 메시지의 ID를 추적
   const streamingMessageIdRef = useRef<string | null>(null);
+  const streamingContentRef = useRef<string>('');
 
   const sendMessage = async (sentence: string, filters: string[]) => {
     setIsLoading(true);
@@ -49,36 +50,43 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
       content: '',
     };
 
-    // 사용자 메시지와 빈 어시스턴트 메시지 추가
-    setMessages((prev) => [...prev, userMessage, assistantMessage]);
     streamingMessageIdRef.current = assistantMessageId;
+    streamingContentRef.current = '';
+    setMessages((prev) => [...prev, userMessage, assistantMessage]);
 
     const payload: ChatStreamPayload = { sentence, filter: filters };
 
     try {
       await streamChat(payload, {
         onMessage: (partialResponse) => {
-          setMessages((prev) =>
-            prev.map((msg) =>
-              msg.id === streamingMessageIdRef.current
-                ? { ...msg, content: msg.content + partialResponse }
-                : msg
-            )
-          );
+          streamingContentRef.current += partialResponse;
+
+          flushSync(() => {
+            setMessages((prev) => {
+              const updated = prev.map((msg) => {
+                if (msg.id === streamingMessageIdRef.current) {
+                  const newContent = streamingContentRef.current;
+                  return { ...msg, content: newContent };
+                }
+                return msg;
+              });
+              return updated;
+            });
+          });
         },
         onDone: () => {
           setIsLoading(false);
           streamingMessageIdRef.current = null;
+          streamingContentRef.current = '';
         },
         onError: (err) => {
-          console.error('Stream error:', err);
           setError('메시지 수신 중 오류가 발생했습니다.');
           setIsLoading(false);
           streamingMessageIdRef.current = null;
+          streamingContentRef.current = '';
         },
       });
     } catch (err) {
-      console.error('Failed to send message:', err);
       setError('요청 전송에 실패했습니다.');
       setIsLoading(false);
     }

@@ -10,14 +10,13 @@ export interface ChatStreamPayload {
 export interface ChatStreamOptions {
   onMessage: (data: string) => void;
   onDone: () => void;
-  onError: (error: any) => void;
+  onError: (error: unknown) => void;
 }
-
-const SSE_TIMEOUT = 300_000;
 
 export async function streamChat(payload: ChatStreamPayload, options: ChatStreamOptions) {
   const { onMessage, onDone, onError } = options;
   const ctrl = new AbortController();
+  let isDone = false;
 
   try {
     await fetchEventSource(`${API_URL}/ai/stream/search`, {
@@ -38,22 +37,32 @@ export async function streamChat(payload: ChatStreamPayload, options: ChatStream
         }
       },
       onmessage: (event: EventSourceMessage) => {
-        if (event.event === 'message') {
+        if (!event.event || event.event === 'message') {
           try {
             const data = JSON.parse(event.data);
             const token = data.token;
-            onMessage(token);
-          } catch (e) {
-            console.error('Failed to parse SSE data JSON:', event.data, e);
-            onMessage(event.data);
+
+            if (token) {
+              onMessage(token);
+            }
+          } catch {
+            if (event.data) {
+              onMessage(event.data);
+            }
           }
         } else if (event.event === 'done') {
-          onDone();
-          ctrl.abort();
+          if (!isDone) {
+            isDone = true;
+            onDone();
+            ctrl.abort();
+          }
         }
       },
       onclose: () => {
-        console.log('Stream closed by server or client.');
+        if (!isDone) {
+          isDone = true;
+          onDone();
+        }
       },
       onerror: (err) => {
         onError(err);
@@ -62,7 +71,9 @@ export async function streamChat(payload: ChatStreamPayload, options: ChatStream
       },
     });
   } catch (err) {
-    if (err.name !== 'AbortError') {
+    if (err instanceof Error && err.name !== 'AbortError') {
+      onError(err);
+    } else if (!(err instanceof Error)) {
       onError(err);
     }
   }
