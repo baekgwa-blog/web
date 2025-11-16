@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import { cn } from '@/lib/utils';
 import { Hash } from 'lucide-react';
 import { throttle } from 'lodash-es';
@@ -33,7 +33,7 @@ export function TocList({ toc }: TocListProps) {
     setActiveId(currentId);
   }, [toc]);
 
-  const throttledScroll = useCallback(throttle(handleScroll, 100), [handleScroll]);
+  const throttledScroll = useMemo(() => throttle(handleScroll, 100), [handleScroll]);
 
   useEffect(() => {
     const headerElement = document.querySelector('header');

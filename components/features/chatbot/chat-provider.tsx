@@ -79,14 +79,14 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
           streamingMessageIdRef.current = null;
           streamingContentRef.current = '';
         },
-        onError: (err) => {
+        onError: () => {
           setError('메시지 수신 중 오류가 발생했습니다.');
           setIsLoading(false);
           streamingMessageIdRef.current = null;
           streamingContentRef.current = '';
         },
       });
-    } catch (err) {
+    } catch {
       setError('요청 전송에 실패했습니다.');
       setIsLoading(false);
     }

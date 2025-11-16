@@ -48,39 +48,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const dynamicPages: MetadataRoute.Sitemap = [];
 
   // 블로그 포스트들 가져오기
-  try {
-    const postsResponse = await getPostList({ size: '1000' }); // 충분히 큰 사이즈로 모든 포스트 가져오기
+  const postsResponse = await getPostList({ size: '1000' }); // 충분히 큰 사이즈로 모든 포스트 가져오기
 
-    if (postsResponse.isSuccess && postsResponse.data) {
-      const blogPosts: MetadataRoute.Sitemap = postsResponse.data.content.map((post) => ({
-        url: `${baseUrl}/blog/${post.slug}`,
-        lastModified: new Date(post.modifiedAt || post.createdAt),
-        changeFrequency: 'weekly' as const,
-        priority: 0.8,
-      }));
+  if (postsResponse.isSuccess && postsResponse.data) {
+    const blogPosts: MetadataRoute.Sitemap = postsResponse.data.content.map((post) => ({
+      url: `${baseUrl}/blog/${post.slug}`,
+      lastModified: new Date(post.modifiedAt || post.createdAt),
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    }));
 
-      dynamicPages.push(...blogPosts);
-    }
-  } catch (error) {
-    console.error('Failed to fetch posts for sitemap:', error);
+    dynamicPages.push(...blogPosts);
   }
 
   // 스택 시리즈들 가져오기
-  try {
-    const stacksResponse = await getAllStack();
+  const stacksResponse = await getAllStack();
 
-    if (stacksResponse.isSuccess && stacksResponse.data) {
-      const stackPages: MetadataRoute.Sitemap = stacksResponse.data.map((stack) => ({
-        url: `${baseUrl}/stack/${stack.stackId}`,
-        lastModified: new Date(stack.updatedAt),
-        changeFrequency: 'weekly' as const,
-        priority: 0.7,
-      }));
+  if (stacksResponse.isSuccess && stacksResponse.data) {
+    const stackPages: MetadataRoute.Sitemap = stacksResponse.data.map((stack) => ({
+      url: `${baseUrl}/stack/${stack.stackId}`,
+      lastModified: new Date(stack.updatedAt),
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    }));
 
-      dynamicPages.push(...stackPages);
-    }
-  } catch (error) {
-    console.error('Failed to fetch stacks for sitemap:', error);
+    dynamicPages.push(...stackPages);
   }
 
   return [...staticPages, ...dynamicPages];
