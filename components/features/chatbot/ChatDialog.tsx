@@ -23,65 +23,94 @@ const MessageBubble = ({ role, content }: { role: 'user' | 'assistant'; content:
   const isUser = role === 'user';
 
   return (
-    <div className={`flex w-full ${isUser ? 'justify-end' : 'justify-start'}`}>
-      {/* [수정]
-        1. 말풍선(부모): 'max-w-[85%]'와 'min-w-0' 유지. 
-           (flex 아이템, shrink-to-fit, 최대 너비 제한, 축소 가능)
-      */}
+    <div className={`flex w-full min-w-0 ${isUser ? 'justify-end' : 'justify-start'}`}>
       <div
-        className={`max-w-[85%] min-w-0 rounded-lg px-4 py-3 ${
+        className={`max-w-[85%] min-w-0 overflow-hidden rounded-lg px-4 py-3 break-words ${
           isUser ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
         }`}
+        style={{
+          wordBreak: 'break-word',
+          overflowWrap: 'break-word',
+          wordWrap: 'break-word',
+        }}
       >
-        {/* [수정]
-          2. 컨텐츠 래퍼(자식): 'w-full' 제거. (순환 참조 고리 제거)
-             이제 이 div는 부모의 너비를 따르는 단순 블록 요소가 됩니다.
-        */}
-        <div className="overflow-hidden">
+        <div
+          className="w-full break-words"
+          style={{
+            wordBreak: 'break-word',
+            overflowWrap: 'break-word',
+            wordWrap: 'break-word',
+          }}
+        >
           <ReactMarkdown
             components={{
-              /* [수정]
-                3. 모든 태그에 'break-all' 대신 'break-words' 적용.
-                   - 'break-words'는 'overflow-wrap: break-word'입니다.
-                   - 평소엔 단어 단위로 예쁘게 줄바꿈합니다.
-                   - 'application-logs...'처럼 띄어쓰기 없는 긴 텍스트가 
-                     오버플로우 될 때만 강제로 쪼갭니다.
-              */
-              p: ({ node, ...props }) => (
-                <p {...props} className="break-words whitespace-pre-wrap" />
+              p: ({ ...props }) => (
+                <p
+                  {...props}
+                  className="break-words whitespace-normal"
+                  style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}
+                />
               ),
-              a: ({ node, ...props }) => (
+              a: ({ ...props }) => (
                 <a
                   {...props}
                   className="font-medium break-words text-blue-400 underline hover:text-blue-300"
                   target="_blank"
                   rel="noopener noreferrer"
+                  style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}
                 />
               ),
-              h3: ({ node, ...props }) => (
-                <h3 {...props} className="mt-4 mb-2 text-lg font-semibold break-words" />
+              h3: ({ ...props }) => (
+                <h3
+                  {...props}
+                  className="mt-4 mb-2 text-lg font-semibold break-words"
+                  style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}
+                />
               ),
-              h2: ({ node, ...props }) => (
-                <h2 {...props} className="mt-5 mb-2 text-xl font-semibold break-words" />
+              h2: ({ ...props }) => (
+                <h2
+                  {...props}
+                  className="mt-5 mb-2 text-xl font-semibold break-words"
+                  style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}
+                />
               ),
-              // 🚨 [수정] ul에도 'break-words'를 적용해야 합니다.
-              //    이래야 'ul > li' 안에 긴 텍스트가 있어도 짤리지 않습니다.
-              ul: ({ node, ...props }) => (
-                <ul {...props} className="ml-6 list-disc space-y-1 break-words" />
+              ul: ({ ...props }) => (
+                <ul
+                  {...props}
+                  className="ml-6 list-disc space-y-1 break-words"
+                  style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}
+                />
               ),
-              strong: ({ node, ...props }) => (
-                <strong {...props} className="font-semibold break-words" />
+              li: ({ ...props }) => (
+                <li
+                  {...props}
+                  className="break-words"
+                  style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}
+                />
               ),
-              code: ({ node, ...props }) => (
+              strong: ({ ...props }) => (
+                <strong
+                  {...props}
+                  className="font-semibold break-words"
+                  style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}
+                />
+              ),
+              code: ({ ...props }) => (
                 <code
                   {...props}
                   className="rounded bg-black/10 px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold break-words dark:bg-white/10"
+                  style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}
                 />
               ),
-              pre: ({ node, ...props }) => (
+              pre: ({ ...props }) => (
                 <pre
                   {...props}
-                  className="my-2 overflow-x-auto rounded bg-black/10 p-2 dark:bg-white/10"
+                  className="my-2 overflow-x-auto rounded bg-black/10 p-2 break-words dark:bg-white/10"
+                  style={{
+                    wordBreak: 'break-word',
+                    overflowWrap: 'break-word',
+                    whiteSpace: 'pre-wrap',
+                  }}
                 />
               ),
             }}
@@ -138,9 +167,6 @@ export const ChatDialog = () => {
 
   return (
     <Dialog open={isChatOpen} onOpenChange={setChatOpen}>
-      {/* 💡 [수정] max-w-[95vw] (모바일용), sm:max-w-3xl (태블릿), lg:max-w-4xl (데스크탑)
-        이전 코드의 max-w-[95vw]는 유지했습니다.
-      */}
       <DialogContent className="flex h-[80vh] max-h-[800px] w-full max-w-[95vw] flex-col p-0 sm:max-w-3xl lg:max-w-4xl">
         <DialogHeader className="p-6 pb-2">
           <DialogTitle className="flex items-center text-lg">
@@ -172,7 +198,7 @@ export const ChatDialog = () => {
           </div>
         </ScrollArea>
 
-        {/* Footer (이전과 동일) */}
+        {/* Footer */}
         <DialogFooter className="!flex-col border-t p-6">
           {/* 카테고리 필터 (가로 스크롤 영역) */}
           {categories.length > 0 && (
