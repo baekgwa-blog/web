@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Loader2, Send, Sparkles } from 'lucide-react';
+import { AlertCircle, Loader2, Send, Sparkles } from 'lucide-react';
 
 import {
   Dialog,
@@ -18,6 +18,7 @@ import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { CategoryList, getCategories } from '@/lib/api/category';
 import { useChat } from './chat-provider';
+import { AiChatBotHealthCheckResponse, getChatbotHealthCheck } from '@/lib/api/chatbot';
 
 const MessageBubble = ({ role, content }: { role: 'user' | 'assistant'; content: string }) => {
   const isUser = role === 'user';
@@ -129,21 +130,36 @@ export const ChatDialog = () => {
   const [categories, setCategories] = useState<CategoryList[]>([]);
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
 
+  const [healthStatus, setHealthStatus] = useState<AiChatBotHealthCheckResponse | null>(null);
+  const [isHealthChecking, setIsHealthChecking] = useState(false);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isChatOpen) {
-      const fetchCategories = async () => {
+      const initChatData = async () => {
+        setIsHealthChecking(true);
         try {
-          const response = await getCategories();
-          if (response.isSuccess && response.data) {
-            setCategories(response.data);
+          const [categoryRes, healthRes] = await Promise.all([
+            getCategories(),
+            getChatbotHealthCheck()
+          ]);
+
+          if (categoryRes.isSuccess && categoryRes.data) {
+            setCategories(categoryRes.data);
+          }
+
+          if (healthRes.isSuccess && healthRes.data) {
+            setHealthStatus(healthRes.data);
           }
         } catch (err) {
-          console.error('Failed to fetch categories:', err);
+          console.error('Failed to fetch chat init data:', err);
+        } finally {
+          setIsHealthChecking(false);
         }
       };
-      fetchCategories();
+
+      initChatData();
     }
   }, [isChatOpen]);
 
@@ -162,15 +178,18 @@ export const ChatDialog = () => {
     }
   }, [isChatOpen, messages.length]);
 
+  const isServiceUnavailable = !isHealthChecking && healthStatus?.available === false;
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() || isLoading) return;
+    if (!input.trim() || isLoading || isServiceUnavailable) return;
     sendMessage(input, selectedFilters);
     setInput('');
     setSelectedFilters([]);
   };
 
   const toggleFilter = (filterName: string) => {
+    if (isServiceUnavailable) return;
     setSelectedFilters((prev) =>
       prev.includes(filterName) ? prev.filter((f) => f !== filterName) : [...prev, filterName]
     );
@@ -189,6 +208,17 @@ export const ChatDialog = () => {
             <br />
             현재 하루에 5회의 제한이 있습니다. 🙏
           </DialogDescription>
+
+          {isServiceUnavailable && (
+            <div className="mt-4 flex items-center gap-2 rounded-md bg-destructive/10 p-3 text-sm text-destructive">
+              <AlertCircle className="h-4 w-4 shrink-0" />
+              <div className="font-medium">
+                현재 AI 서비스 점검 중입니다.
+                <br />
+                <span className="text-xs font-normal opacity-90">잠시 후 다시 시도해주세요.</span>
+              </div>
+            </div>
+          )}
         </DialogHeader>
 
         {/* 메시지 영역 */}
@@ -221,7 +251,9 @@ export const ChatDialog = () => {
                     key={cat.id}
                     variant={selectedFilters.includes(cat.name) ? 'default' : 'secondary'}
                     onClick={() => toggleFilter(cat.name)}
-                    className="cursor-pointer transition-colors"
+                    className={`cursor-pointer transition-colors ${
+                        isServiceUnavailable ? 'opacity-50 cursor-not-allowed' : ''
+                    }`}
                   >
                     {cat.name}
                   </Badge>
@@ -239,11 +271,19 @@ export const ChatDialog = () => {
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="궁금한 것을 물어보세요 (예: 멀티 프로세스란?)"
-              disabled={isLoading}
+              placeholder={
+                isServiceUnavailable 
+                  ? "현재 서비스를 사용할 수 없습니다." 
+                  : "궁금한 것을 물어보세요 (예: 멀티 프로세스란?)"
+              }
+              disabled={isLoading || isHealthChecking || isServiceUnavailable}
               className="flex-1"
             />
-            <Button type="submit" disabled={isLoading || !input.trim()} size="icon">
+            <Button 
+                type="submit" 
+                disabled={isLoading || !input.trim() || isHealthChecking || isServiceUnavailable} 
+                size="icon"
+            >
               <Send className="h-4 w-4" />
             </Button>
           </form>
