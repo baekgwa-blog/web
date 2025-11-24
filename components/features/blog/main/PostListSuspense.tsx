@@ -81,7 +81,7 @@ export default function PostList({ postsPromise }: PostListProps) {
   return (
     <div className="space-y-4">
       {mappedPosts.map((post, index) => (
-        <Link href={`/blog/${post.slug}`} key={post.id} className="block">
+        <Link href={`/blog/${post.slug}`} prefetch={false} key={post.id} className="block">
           <PostCard post={post} isFirst={index === 0} />
         </Link>
       ))}
