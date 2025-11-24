@@ -59,6 +59,7 @@ export function PostStackContent({ stackResponse, currentPostId }: PostStackCont
                     <li key={post.postId} className="overflow-hidden pl-1">
                       <Link
                         href={`/blog/${post.slug}`}
+                        prefetch={false}
                         className={`flex max-w-full items-center gap-2 truncate font-semibold transition-colors hover:underline ${
                           isCurrent ? 'text-primary' : 'hover:text-foreground'
                         }`}

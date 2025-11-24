@@ -18,7 +18,7 @@ export function StackPostItem({ post, isLast }: Props) {
 
   return (
     <div>
-      <Link href={`/blog/${post.slug}`} prefetch className="group block">
+      <Link href={`/blog/${post.slug}`} prefetch={false} className="group block">
         {/* 1. 포스트 제목 */}
         <h3 className="group-hover:text-primary truncate text-2xl font-bold transition-colors">
           <span className="text-primary/80 mr-2">{post.sequence}.</span>
