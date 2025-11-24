@@ -9,6 +9,7 @@ import { Toaster } from '@/components/ui/sonner';
 import { ChatButton } from '@/components/features/chatbot/ChatButton';
 import { ChatDialog } from '@/components/features/chatbot/ChatDialog';
 import { ChatController } from '@/components/features/chatbot/ChatController';
+import { Suspense } from 'react';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -23,6 +24,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "백과's 블로그",
   description: '개발자 백과의 개인 블로그 입니다.',
+};
+
+const HeaderFallback = () => {
+  return <div className="h-[var(--header-height)]" />;
 };
 
 export default function RootLayout({
@@ -40,7 +45,9 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Providers>
           <div className="flex min-h-screen flex-col">
-            <Header />
+            <Suspense fallback={<HeaderFallback />}>
+              <Header />
+            </Suspense>
             <main className="container flex-1">{children}</main>
             <Footer />
             <Toaster position="top-center" expand={false} closeButton richColors />
