@@ -142,7 +142,7 @@ export const ChatDialog = () => {
         try {
           const [categoryRes, healthRes] = await Promise.all([
             getCategories(),
-            getChatbotHealthCheck()
+            getChatbotHealthCheck(),
           ]);
 
           if (categoryRes.isSuccess && categoryRes.data) {
@@ -210,7 +210,7 @@ export const ChatDialog = () => {
           </DialogDescription>
 
           {isServiceUnavailable && (
-            <div className="mt-4 flex items-center gap-2 rounded-md bg-destructive/10 p-3 text-sm text-destructive">
+            <div className="bg-destructive/10 text-destructive mt-4 flex items-center gap-2 rounded-md p-3 text-sm">
               <AlertCircle className="h-4 w-4 shrink-0" />
               <div className="font-medium">
                 현재 AI 서비스 점검 중입니다.
@@ -252,7 +252,7 @@ export const ChatDialog = () => {
                     variant={selectedFilters.includes(cat.name) ? 'default' : 'secondary'}
                     onClick={() => toggleFilter(cat.name)}
                     className={`cursor-pointer transition-colors ${
-                        isServiceUnavailable ? 'opacity-50 cursor-not-allowed' : ''
+                      isServiceUnavailable ? 'cursor-not-allowed opacity-50' : ''
                     }`}
                   >
                     {cat.name}
@@ -272,17 +272,17 @@ export const ChatDialog = () => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder={
-                isServiceUnavailable 
-                  ? "현재 서비스를 사용할 수 없습니다." 
-                  : "궁금한 것을 물어보세요 (예: 멀티 프로세스란?)"
+                isServiceUnavailable
+                  ? '현재 서비스를 사용할 수 없습니다.'
+                  : '궁금한 것을 물어보세요 (예: 멀티 프로세스란?)'
               }
               disabled={isLoading || isHealthChecking || isServiceUnavailable}
               className="flex-1"
             />
-            <Button 
-                type="submit" 
-                disabled={isLoading || !input.trim() || isHealthChecking || isServiceUnavailable} 
-                size="icon"
+            <Button
+              type="submit"
+              disabled={isLoading || !input.trim() || isHealthChecking || isServiceUnavailable}
+              size="icon"
             >
               <Send className="h-4 w-4" />
             </Button>
