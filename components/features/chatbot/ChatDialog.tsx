@@ -215,7 +215,9 @@ export const ChatDialog = () => {
               <div className="font-medium">
                 현재 AI 서비스 점검 중입니다.
                 <br />
-                <span className="text-xs font-normal opacity-90">잠시 후 다시 시도해주세요.</span>
+                <span className="text-xs font-normal opacity-90">
+                  사실 운영자의 지갑이 얇아 AI 서비스가 Off 상태입니다. 😢
+                </span>
               </div>
             </div>
           )}
