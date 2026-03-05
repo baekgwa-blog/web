@@ -29,7 +29,7 @@ export async function fetchApi<T>(endpoint: string, options: RequestInit): Promi
   }
 
   if (typeof window === 'undefined') {
-    const { cookies } = await import('next/headers');
+    const { cookies, headers: nextHeaders } = await import('next/headers');
     const cookieStore = await cookies();
     const cookieHeader = cookieStore
       .getAll()
@@ -38,6 +38,21 @@ export async function fetchApi<T>(endpoint: string, options: RequestInit): Promi
 
     if (cookieHeader) {
       headers.set('Cookie', cookieHeader);
+    }
+
+    const headerStore = await nextHeaders();
+    const forwardedFor = headerStore.get('x-forwarded-for');
+    const realIp = headerStore.get('x-real-ip');
+    const userAgent = headerStore.get('user-agent');
+
+    if (forwardedFor) {
+      headers.set('X-Forwarded-For', forwardedFor);
+    }
+    if (realIp) {
+      headers.set('X-Real-IP', realIp);
+    }
+    if (userAgent) {
+      headers.set('User-Agent', userAgent);
     }
   }
 
