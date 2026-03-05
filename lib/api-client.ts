@@ -29,7 +29,7 @@ export async function fetchApi<T>(endpoint: string, options: RequestInit): Promi
   }
 
   if (typeof window === 'undefined') {
-    const { cookies } = await import('next/headers');
+    const { cookies, headers: nextHeaders } = await import('next/headers');
     const cookieStore = await cookies();
     const cookieHeader = cookieStore
       .getAll()
