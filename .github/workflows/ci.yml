@@ -1,4 +1,4 @@
-name: 🚧 CI - Build Check
+name: 🚧 CI - Build Check v2
 
 on:
   pull_request:
