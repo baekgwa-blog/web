@@ -29,7 +29,7 @@ export async function fetchApi<T>(endpoint: string, options: RequestInit): Promi
   }
 
   if (typeof window === 'undefined') {
-    const { cookies } = await import('next/headers');
+    const { cookies, headers: nextHeaders } = await import('next/headers');
     const cookieStore = await cookies();
     const cookieHeader = cookieStore
       .getAll()
@@ -38,6 +38,28 @@ export async function fetchApi<T>(endpoint: string, options: RequestInit): Promi
 
     if (cookieHeader) {
       headers.set('Cookie', cookieHeader);
+    }
+
+    const reqHeaders = await nextHeaders();
+    const FORWARD_HEADERS = ['user-agent', 'referer', 'accept-language'];
+
+    FORWARD_HEADERS.forEach((key) => {
+      const value = reqHeaders.get(key);
+      if (value) headers.set(key, value);
+    });
+
+    const realIp = reqHeaders.get('x-real-ip');
+    const forwardedFor = reqHeaders.get('x-forwarded-for');
+
+    let trustedClientIp = realIp;
+
+    if (!trustedClientIp && forwardedFor) {
+      const ips = forwardedFor.split(',').map((ip) => ip.trim());
+      trustedClientIp = ips[ips.length - 1];
+    }
+
+    if (trustedClientIp) {
+      headers.set('X-Forwarded-For', trustedClientIp);
     }
   }
 
