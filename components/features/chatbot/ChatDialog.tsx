@@ -125,7 +125,8 @@ const MessageBubble = ({ role, content }: { role: 'user' | 'assistant'; content:
 };
 
 export const ChatDialog = () => {
-  const { isChatOpen, setChatOpen, messages, sendMessage, isLoading, error } = useChat();
+  const { isChatOpen, setChatOpen, messages, sendMessage, isLoading, error, rateLimitInfo } =
+    useChat();
   const [input, setInput] = useState('');
   const [categories, setCategories] = useState<CategoryList[]>([]);
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
@@ -152,8 +153,6 @@ export const ChatDialog = () => {
           if (healthRes.isSuccess && healthRes.data) {
             setHealthStatus(healthRes.data);
           }
-        } catch (err) {
-          console.error('Failed to fetch chat init data:', err);
         } finally {
           setIsHealthChecking(false);
         }
@@ -179,17 +178,28 @@ export const ChatDialog = () => {
   }, [isChatOpen, messages.length]);
 
   const isServiceUnavailable = !isHealthChecking && healthStatus?.available === false;
+  const isRateLimitExceeded = rateLimitInfo?.remaining === 0;
+
+  const formatResetTime = (unix: number) => {
+    return new Date(unix * 1000).toLocaleString('ko-KR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() || isLoading || isServiceUnavailable) return;
+    if (!input.trim() || isLoading || isServiceUnavailable || isRateLimitExceeded) return;
     sendMessage(input, selectedFilters);
     setInput('');
     setSelectedFilters([]);
   };
 
   const toggleFilter = (filterName: string) => {
-    if (isServiceUnavailable) return;
+    if (isServiceUnavailable || isRateLimitExceeded) return;
     setSelectedFilters((prev) =>
       prev.includes(filterName) ? prev.filter((f) => f !== filterName) : [...prev, filterName]
     );
@@ -205,9 +215,30 @@ export const ChatDialog = () => {
           </DialogTitle>
           <DialogDescription className="text-muted-foreground text-sm">
             블로그 콘텐츠에 대해 궁금한 것을 물어보세요. AI가 요약해 드립니다.
-            <br />
-            현재 하루에 5회의 제한이 있습니다. 🙏
           </DialogDescription>
+
+          {rateLimitInfo && (
+            <div className="mt-2">
+              {isRateLimitExceeded ? (
+                <div className="bg-destructive/10 text-destructive flex items-start gap-2 rounded-md px-3 py-2 text-xs font-medium">
+                  <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                  <div className="flex flex-col">
+                    <span>오늘 요청 한도에 도달했습니다.</span>
+                    <span>초기화 : {formatResetTime(rateLimitInfo.reset)}</span>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <p className="text-muted-foreground text-xs">
+                    남은 요청 : {rateLimitInfo.remaining} / {rateLimitInfo.limit}
+                  </p>
+                  <p className="text-muted-foreground text-xs">
+                    초기화 : {formatResetTime(rateLimitInfo.reset)}
+                  </p>
+                </>
+              )}
+            </div>
+          )}
 
           {isServiceUnavailable && (
             <div className="bg-destructive/10 text-destructive mt-4 flex items-center gap-2 rounded-md p-3 text-sm">
@@ -254,7 +285,9 @@ export const ChatDialog = () => {
                     variant={selectedFilters.includes(cat.name) ? 'default' : 'secondary'}
                     onClick={() => toggleFilter(cat.name)}
                     className={`cursor-pointer transition-colors ${
-                      isServiceUnavailable ? 'cursor-not-allowed opacity-50' : ''
+                      isServiceUnavailable || isRateLimitExceeded
+                        ? 'cursor-not-allowed opacity-50'
+                        : ''
                     }`}
                   >
                     {cat.name}
@@ -276,14 +309,24 @@ export const ChatDialog = () => {
               placeholder={
                 isServiceUnavailable
                   ? '현재 서비스를 사용할 수 없습니다.'
-                  : '궁금한 것을 물어보세요 (예: 멀티 프로세스란?)'
+                  : isRateLimitExceeded
+                    ? '오늘 요청 한도에 도달했습니다.'
+                    : '궁금한 것을 물어보세요 (예: 멀티 프로세스란?)'
               }
-              disabled={isLoading || isHealthChecking || isServiceUnavailable}
+              disabled={
+                isLoading || isHealthChecking || isServiceUnavailable || isRateLimitExceeded
+              }
               className="flex-1"
             />
             <Button
               type="submit"
-              disabled={isLoading || !input.trim() || isHealthChecking || isServiceUnavailable}
+              disabled={
+                isLoading ||
+                !input.trim() ||
+                isHealthChecking ||
+                isServiceUnavailable ||
+                isRateLimitExceeded
+              }
               size="icon"
             >
               <Send className="h-4 w-4" />

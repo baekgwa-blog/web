@@ -1,6 +1,6 @@
 'use client';
 
-import { ChatStreamPayload, streamChat } from '@/lib/sse-client';
+import { ChatStreamPayload, RateLimitInfo, streamChat } from '@/lib/sse-client';
 import React, { createContext, useContext, useState, ReactNode, useRef } from 'react';
 import { flushSync } from 'react-dom';
 
@@ -19,6 +19,7 @@ interface ChatContextType {
   sendMessage: (sentence: string, filters: string[]) => void;
   isLoading: boolean;
   error: string | null;
+  rateLimitInfo: RateLimitInfo | null;
 }
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
@@ -29,6 +30,7 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [rateLimitInfo, setRateLimitInfo] = useState<RateLimitInfo | null>(null);
 
   const streamingMessageIdRef = useRef<string | null>(null);
   const streamingContentRef = useRef<string>('');
@@ -79,8 +81,20 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
           streamingMessageIdRef.current = null;
           streamingContentRef.current = '';
         },
-        onError: () => {
-          setError('메시지 수신 중 오류가 발생했습니다.');
+        onRateLimitInfo: (info) => setRateLimitInfo(info),
+        onError: (err) => {
+          if (err instanceof Error && err.message.startsWith('rate_limit_exceeded:')) {
+            const parts = err.message.split(':');
+            const retryAfter = Number(parts[1]);
+            const minutes = retryAfter > 0 ? Math.ceil(retryAfter / 60) : 0;
+            setError(
+              minutes > 0
+                ? `요청 한도 초과. ${minutes}분 후 다시 시도하세요.`
+                : '오늘 요청 한도에 도달했습니다.'
+            );
+          } else {
+            setError('메시지 수신 중 오류가 발생했습니다.');
+          }
           setIsLoading(false);
           streamingMessageIdRef.current = null;
           streamingContentRef.current = '';
@@ -103,6 +117,7 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
         sendMessage,
         isLoading,
         error,
+        rateLimitInfo,
       }}
     >
       {children}
