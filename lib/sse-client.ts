@@ -7,14 +7,22 @@ export interface ChatStreamPayload {
   filter: string[];
 }
 
+export interface RateLimitInfo {
+  limit: number;
+  remaining: number;
+  reset: number;
+  retryAfter?: number;
+}
+
 export interface ChatStreamOptions {
   onMessage: (data: string) => void;
   onDone: () => void;
   onError: (error: unknown) => void;
+  onRateLimitInfo?: (info: RateLimitInfo) => void;
 }
 
 export async function streamChat(payload: ChatStreamPayload, options: ChatStreamOptions) {
-  const { onMessage, onDone, onError } = options;
+  const { onMessage, onDone, onError, onRateLimitInfo } = options;
   const ctrl = new AbortController();
   let isDone = false;
 
@@ -31,9 +39,26 @@ export async function streamChat(payload: ChatStreamPayload, options: ChatStream
       openWhenHidden: true,
 
       onopen: async (response) => {
+        const limit = Number(response.headers.get('X-RateLimit-Limit'));
+        const remaining = Number(response.headers.get('X-RateLimit-Remaining'));
+        const reset = Number(response.headers.get('X-RateLimit-Reset'));
+
+        if (response.status === 429) {
+          const retryAfter = Number(response.headers.get('Retry-After')) || undefined;
+          if (onRateLimitInfo && !isNaN(limit) && !isNaN(remaining) && !isNaN(reset)) {
+            onRateLimitInfo({ limit, remaining, reset, retryAfter });
+          }
+          const errText = await response.text();
+          throw new Error(`rate_limit_exceeded:${retryAfter ?? 0}:${errText}`);
+        }
+
         if (!response.ok) {
           const errText = await response.text();
           throw new Error(`Failed to connect: ${response.status} ${errText}`);
+        }
+
+        if (onRateLimitInfo && !isNaN(limit) && !isNaN(remaining) && !isNaN(reset)) {
+          onRateLimitInfo({ limit, remaining, reset });
         }
       },
       onmessage: (event: EventSourceMessage) => {

@@ -14,6 +14,7 @@ import CategorySelector from './CategorySelector';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { FileType, uploadImage } from '@/lib/api/upload';
+import { useLeaveConfirmation } from '@/lib/hooks/use-leave-confirmation';
 
 const TiptapEditor = dynamic(() => import('@/components/editor/TiptapEditor'), {
   ssr: false,
@@ -27,6 +28,7 @@ export default function WritePostForm() {
   const [selectedTags, setSelectedTags] = useState<TagItem[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [editorContent, setEditorContent] = useState('');
+  const { disable } = useLeaveConfirmation();
 
   const [state, formAction, isPending] = useActionState(createPostAction, {
     message: '',
@@ -43,10 +45,11 @@ export default function WritePostForm() {
 
   useEffect(() => {
     if (state.success) {
+      disable();
       queryClient.invalidateQueries({ queryKey: ['posts'] });
       router.push('/blog/' + state.slug);
     }
-  }, [state, router, queryClient]);
+  }, [state, router, queryClient, disable]);
 
   useEffect(() => {
     const titleError = state.errors?.title?.[0];
