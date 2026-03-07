@@ -61,6 +61,13 @@ export const getPostDetail = async ({
   });
 };
 
+export const incrementViewCount = async (slug: string): Promise<void> => {
+  await fetchApi<null>(`/post/${encodeURIComponent(slug)}/view`, {
+    method: 'POST',
+    credentials: 'include',
+  });
+};
+
 export const createPost = async ({
   title,
   content,
